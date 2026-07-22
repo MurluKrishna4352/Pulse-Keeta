@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PULSE — AI-Assisted User Operations Intelligence Platform | Keeta Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PULSE — DESIGN SYSTEM
+   Token system: 6 core colors, 3 type families, 9-step spacing
+   ============================================================ */
+:root{
+  /* --- Color: ink/paper --- */
+  --ink:        #14181C;
+  --ink-soft:   #4A5058;
+  --ink-faint:  #7C828A;
+  --bg:         #FAFAF8;
+  --surface:    #FFFFFF;
+  --surface-alt:#F1EFEA;
+  --line:       #E2E0DB;
+  --line-soft:  #EDEBE6;
+
+  /* --- Color: accent red (Keeta-inspired) --- */
+  --accent:      #D62B2B;
+  --accent-dark: #A81F1F;
+  --accent-wash: #FBEAEA;
+
+  /* --- Color: data-state pair (functional, not decorative) --- */
+  --positive:      #146B4E;
+  --positive-wash: #E7F3EE;
+  --warning:       #B4740E;
+  --warning-wash:  #FBF1DF;
+
+  /* --- Cover inversion --- */
+  --cover-bg:  #14181C;
+  --cover-ink: #FAFAF8;
+  --cover-line: #2B3138;
+
+  /* --- Type --- */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* --- Spacing scale --- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 24px;
+  --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+
+  /* --- Radius: intentionally small/sharp; pill only for tags --- */
+  --r-sm: 2px; --r-md: 4px; --r-pill: 999px;
+
+  /* --- Layout --- */
+  --sidebar-w: 296px;
+  --topbar-h: 60px;
+  --footer-h: 44px;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+  font-size:15px;
+  line-height:1.6;
+}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;margin:0;letter-spacing:-0.01em;}
+p{margin:0 0 var(--sp-4);color:var(--ink-soft);}
+ul,ol{margin:0 0 var(--sp-4);padding-left:1.25em;color:var(--ink-soft);}
+li{margin-bottom:var(--sp-2);}
+a{color:var(--accent-dark);}
+strong{color:var(--ink);font-weight:600;}
+code,.mono{font-family:var(--font-mono);}
+::selection{background:var(--accent);color:#fff;}
+
+button{font-family:inherit;cursor:pointer;}
+
+.icon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+.icon-lg{width:26px;height:26px;stroke-width:1.4;}
+.icon-sm{width:14px;height:14px;}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+.app-shell{display:flex;min-height:100vh;}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  width:var(--sidebar-w);
+  flex:none;
+  background:var(--cover-bg);
+  color:var(--cover-ink);
+  height:100vh;
+  position:sticky;
+  top:0;
+  display:flex;
+  flex-direction:column;
+  z-index:40;
+}
+.sidebar-brand{
+  padding:22px 22px 18px;
+  border-bottom:1px solid var(--cover-line);
+  flex:none;
+}
+.sidebar-brand-row{display:flex;align-items:center;gap:10px;}
+.sidebar-wordmark{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:0.01em;color:#fff;display:flex;align-items:baseline;gap:8px;}
+.sidebar-wordmark .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;margin-bottom:2px;}
+.sidebar-sub{font-size:11px;color:#9BA1A8;margin-top:6px;line-height:1.5;font-family:var(--font-mono);letter-spacing:0.02em;}
+.sidebar-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:12px;padding:4px 9px;
+  border:1px solid #3A4048;border-radius:var(--r-pill);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.04em;color:#C7CBD1;
+  text-transform:uppercase;
+}
+.sidebar-badge .dot-live{width:6px;height:6px;border-radius:50%;background:#3FBF8F;box-shadow:0 0 0 2px rgba(63,191,143,0.25);}
+
+.sidebar-nav{flex:1;overflow-y:auto;padding:14px 12px 20px;}
+.sidebar-nav::-webkit-scrollbar{width:6px;}
+.sidebar-nav::-webkit-scrollbar-thumb{background:#2B3138;border-radius:3px;}
+
+.nav-group{margin-bottom:4px;}
+.nav-group-label{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:0.09em;
+  color:#6E747C;text-transform:uppercase;
+  padding:14px 10px 6px;
+}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;margin-bottom:1px;
+  border-radius:var(--r-md);
+  color:#C7CBD1;text-decoration:none;font-size:13.5px;font-weight:500;
+  border-left:2px solid transparent;
+  transition:background .15s ease, color .15s ease;
+}
+.nav-link .icon{width:16px;height:16px;color:#787E86;transition:color .15s ease;}
+.nav-link:hover{background:#1D2226;color:#fff;}
+.nav-link.is-active{background:#20262B;color:#fff;border-left:2px solid var(--accent);}
+.nav-link.is-active .icon{color:var(--accent);}
+.nav-link .num{font-family:var(--font-mono);font-size:10px;color:#565C64;margin-left:auto;}
+
+.sidebar-footer{
+  flex:none;padding:14px 22px 18px;border-top:1px solid var(--cover-line);
+}
+.sidebar-author{font-size:12px;color:#9BA1A8;line-height:1.6;}
+.sidebar-author strong{color:#EDEEF0;font-weight:600;display:block;font-size:12.5px;}
+.sidebar-author a{color:#C7CBD1;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:4px;}
+.sidebar-author a:hover{color:var(--accent);}
+
+/* ---------- Main content panel ---------- */
+.content-col{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+.topbar{
+  height:var(--topbar-h);flex:none;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--sp-6);
+  border-bottom:1px solid var(--line);
+  background:var(--surface);
+  z-index:20;
+}
+.topbar-crumb{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);display:flex;align-items:center;gap:8px;}
+.topbar-crumb b{color:var(--ink);font-weight:600;}
+.topbar-actions{display:flex;align-items:center;gap:10px;}
+.topbar-nav-btn{
+  width:30px;height:30px;border-radius:var(--r-md);border:1px solid var(--line);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
+}
+.topbar-nav-btn:hover{border-color:var(--ink);color:var(--ink);}
+.topbar-nav-btn:disabled{opacity:.3;cursor:default;}
+.topbar-nav-btn:disabled:hover{border-color:var(--line);color:var(--ink-soft);}
+.confidential-chip{
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.05em;color:var(--accent-dark);
+  background:var(--accent-wash);border:1px solid #F3D4D4;padding:4px 9px;border-radius:var(--r-pill);
+  text-transform:uppercase;
+}
+.menu-toggle{display:none;}
+
+.content-scroll{flex:1;overflow-y:auto;position:relative;}
+
+.doc-section{display:none;padding-bottom:var(--sp-9);}
+.doc-section.is-active{display:block;}
+
+/* ============================================================
+   TYPE SCALE / SECTION CHROME
+   ============================================================ */
+.section-inner{max-width:1180px;margin:0 auto;padding:0 var(--sp-7);}
+.section-inner-wide{max-width:1320px;margin:0 auto;padding:0 var(--sp-7);}
+
+.section-head{padding:var(--sp-8) 0 var(--sp-6);border-bottom:1px solid var(--line);margin-bottom:var(--sp-7);}
+.section-eyebrow{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent-dark);margin-bottom:14px;
+}
+.section-eyebrow .rule{width:22px;height:1px;background:var(--accent);display:inline-block;}
+.section-title{font-size:38px;line-height:1.12;color:var(--ink);max-width:820px;}
+.section-dek{font-size:16.5px;color:var(--ink-soft);max-width:700px;margin-top:16px;font-weight:400;}
+
+h2.h-lg{font-size:26px;color:var(--ink);margin:0 0 6px;}
+h3.h-md{font-size:18px;color:var(--ink);margin:0 0 6px;}
+.block-label{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px;display:block;
+}
+.lede{font-size:17px;color:var(--ink-soft);max-width:760px;line-height:1.65;}
+
+.block{margin-bottom:var(--sp-8);}
+.block-head{margin-bottom:var(--sp-5);display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.block-head .tag{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+
+/* --- Callouts --- */
+.callout{
+  border:1px solid var(--line);border-left:3px solid var(--ink);
+  background:var(--surface);border-radius:var(--r-sm);
+  padding:18px 22px;display:flex;gap:14px;
+}
+.callout .icon{color:var(--ink);margin-top:2px;}
+.callout p:last-child{margin-bottom:0;}
+.callout-title{font-weight:600;color:var(--ink);margin-bottom:4px;font-size:14px;}
+.callout.disclaimer{border-left-color:var(--accent);background:var(--accent-wash);}
+.callout.disclaimer .icon{color:var(--accent-dark);}
+.callout.disclaimer p{color:#5B3131;}
+.callout.disclaimer .callout-title{color:var(--accent-dark);}
+.callout.note{border-left-color:var(--ink-faint);}
+.callout.positive{border-left-color:var(--positive);background:var(--positive-wash);}
+.callout.positive .icon{color:var(--positive);}
+
+/* --- Badges / tags --- */
+.tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.03em;
+  padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line);
+  color:var(--ink-soft);background:var(--surface);text-transform:uppercase;
+}
+.tag.p0{border-color:#F3D4D4;background:var(--accent-wash);color:var(--accent-dark);}
+.tag.p1{border-color:#F5E3BE;background:var(--warning-wash);color:var(--warning);}
+.tag.p2{border-color:var(--line);background:var(--surface-alt);color:var(--ink-soft);}
+.tag.positive{border-color:#C9E4D8;background:var(--positive-wash);color:var(--positive);}
+
+/* --- Buttons --- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-body);font-weight:600;font-size:13.5px;
+  padding:10px 18px;border-radius:var(--r-sm);border:1px solid var(--ink);
+  background:var(--ink);color:#fff;text-decoration:none;
+}
+.btn:hover{background:#000;}
+.btn.ghost{background:transparent;color:var(--ink);}
+.btn.ghost:hover{background:var(--surface-alt);}
+.btn.accent{background:var(--accent);border-color:var(--accent);}
+.btn.accent:hover{background:var(--accent-dark);border-color:var(--accent-dark);}
+
+/* --- Grid utilities --- */
+.grid{display:grid;gap:var(--sp-5);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-12{grid-template-columns:repeat(12,1fr);}
+
+/* --- KPI cards --- */
+.kpi-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:20px 20px 18px;position:relative;overflow:hidden;
+}
+.kpi-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--accent);opacity:0;transition:opacity .2s;}
+.kpi-card:hover::before{opacity:1;}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.kpi-icon{width:32px;height:32px;border-radius:var(--r-sm);background:var(--surface-alt);display:flex;align-items:center;justify-content:center;color:var(--ink);}
+.kpi-delta{font-family:var(--font-mono);font-size:11px;font-weight:600;padding:2px 7px;border-radius:var(--r-pill);}
+.kpi-delta.up{color:var(--positive);background:var(--positive-wash);}
+.kpi-delta.warn{color:var(--warning);background:var(--warning-wash);}
+.kpi-value{font-family:var(--font-mono);font-size:32px;font-weight:600;color:var(--ink);line-height:1;margin-bottom:8px;}
+.kpi-label{font-size:13px;color:var(--ink-soft);font-weight:500;}
+.kpi-sub{font-size:11.5px;color:var(--ink-faint);margin-top:6px;}
+
+/* --- Generic content cards --- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:22px;}
+.card-flush{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;}
+
+/* --- Tables --- */
+.tbl-wrap{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;background:var(--surface);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{
+  text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-faint);background:var(--surface-alt);padding:11px 16px;border-bottom:1px solid var(--line);font-weight:500;
+}
+td{padding:13px 16px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+td strong,td.strong{color:var(--ink);font-weight:600;}
+td.mono,th.mono{font-family:var(--font-mono);}
+tr:hover td{background:#FCFBFA;}
+
+/* --- Section divider rule with pulse motif (signature echo) --- */
+.pulse-rule{display:flex;align-items:center;gap:14px;margin:var(--sp-8) 0;color:var(--line);}
+.pulse-rule::before,.pulse-rule::after{content:"";flex:1;height:1px;background:var(--line);}
+.pulse-rule svg{width:60px;height:14px;flex:none;color:var(--accent);opacity:.55;}
+
+/* --- Numbered process steps --- */
+.step-row{display:flex;gap:18px;padding:20px 0;border-bottom:1px solid var(--line-soft);}
+.step-row:last-child{border-bottom:none;}
+.step-num{
+  font-family:var(--font-mono);font-size:13px;color:var(--accent-dark);flex:none;width:34px;
+  padding-top:2px;font-weight:600;
+}
+.step-body h4{font-size:15px;margin-bottom:6px;}
+.step-body p{margin-bottom:0;font-size:13.5px;}
+
+/* --- Persona cards --- */
+.persona-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;}
+.persona-head{padding:20px 22px 16px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:flex-start;}
+.persona-avatar{
+  width:44px;height:44px;border-radius:var(--r-sm);background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:16px;flex:none;
+}
+.persona-name{font-family:var(--font-display);font-weight:600;font-size:16.5px;color:var(--ink);}
+.persona-role{font-size:12px;color:var(--ink-faint);font-family:var(--font-mono);margin-top:2px;}
+.persona-body{padding:18px 22px;}
+.persona-body h5{font-size:11px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin:14px 0 8px;}
+.persona-body h5:first-child{margin-top:0;}
+.persona-body p{font-size:13.5px;margin-bottom:0;}
+.persona-stats{display:flex;gap:0;border-top:1px solid var(--line);}
+.persona-stat{flex:1;padding:14px 16px;border-right:1px solid var(--line);}
+.persona-stat:last-child{border-right:none;}
+.persona-stat .v{font-family:var(--font-mono);font-weight:600;font-size:16px;color:var(--ink);}
+.persona-stat .l{font-size:10.5px;color:var(--ink-faint);margin-top:2px;}
+
+/* --- Feature spec cards --- */
+.feature-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:24px;}
+.feature-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;}
+.feature-icon{width:38px;height:38px;border-radius:var(--r-sm);background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;}
+.feature-title{font-family:var(--font-display);font-size:17px;font-weight:600;margin-bottom:4px;}
+.feature-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);}
+.feature-list{margin:14px 0 0;padding-left:0;list-style:none;}
+.feature-list li{
+  font-size:13px;padding-left:18px;position:relative;margin-bottom:8px;color:var(--ink-soft);
+}
+.feature-list li::before{content:"";position:absolute;left:0;top:7px;width:6px;height:1.5px;background:var(--accent);}
+
+/* --- Diagram frame --- */
+.diagram-frame{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:32px;}
+.diagram-frame svg{width:100%;height:auto;display:block;}
+
+/* --- Dashboard mockup chrome --- */
+.mock-window{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface);box-shadow:0 1px 2px rgba(20,24,28,0.04), 0 12px 32px -16px rgba(20,24,28,0.18);}
+.mock-titlebar{
+  height:34px;background:var(--surface-alt);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 14px;gap:8px;
+}
+.mock-dot{width:8px;height:8px;border-radius:50%;background:#DCDAD4;}
+.mock-titlebar-label{margin-left:8px;font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);}
+.mock-body{padding:20px;background:#FCFBFA;}
+.mock-toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.mock-pill{font-family:var(--font-mono);font-size:10.5px;padding:5px 10px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);}
+.mock-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.mock-grid{display:grid;gap:14px;}
+
+/* --- Bar chart (CSS) --- */
+.barchart{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:10px;}
+.barchart .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;}
+.barchart .bar{width:100%;max-width:34px;border-radius:2px 2px 0 0;background:var(--ink);position:relative;}
+.barchart .bar.accent{background:var(--accent);}
+.barchart .bar-val{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-soft);}
+.barchart .bar-lbl{font-size:10.5px;color:var(--ink-faint);font-family:var(--font-mono);}
+
+/* --- Timeline / roadmap --- */
+.roadmap{position:relative;}
+.roadmap-track{position:absolute;left:19px;top:6px;bottom:6px;width:2px;background:var(--line);}
+.roadmap-phase{position:relative;padding-left:52px;margin-bottom:var(--sp-7);}
+.roadmap-marker{
+  position:absolute;left:0;top:0;width:40px;height:40px;border-radius:var(--r-sm);
+  background:var(--surface);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-weight:600;font-size:13px;z-index:2;
+}
+.roadmap-phase.is-now .roadmap-marker{border-color:var(--accent);color:var(--accent-dark);}
+.roadmap-phase-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.roadmap-phase-head h4{font-size:17px;}
+.roadmap-window{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-faint);}
+
+/* --- Risk matrix --- */
+.risk-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:20px;}
+.risk-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.risk-title{font-weight:600;color:var(--ink);font-size:14.5px;}
+.sev{font-family:var(--font-mono);font-size:10px;padding:3px 8px;border-radius:var(--r-pill);text-transform:uppercase;letter-spacing:.04em;flex:none;}
+.sev.high{background:var(--accent-wash);color:var(--accent-dark);}
+.sev.med{background:var(--warning-wash);color:var(--warning);}
+.sev.low{background:var(--positive-wash);color:var(--positive);}
+.risk-card p{font-size:13px;margin-bottom:10px;}
+.risk-mitig{font-size:12.5px;color:var(--ink-soft);padding-top:10px;border-top:1px dashed var(--line);}
+.risk-mitig b{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);display:block;margin-bottom:4px;font-weight:600;}
+
+/* --- Copilot demo widget --- */
+.copilot{background:var(--ink);border-radius:var(--r-md);overflow:hidden;color:#fff;}
+.copilot-head{padding:16px 20px;border-bottom:1px solid #262C32;display:flex;align-items:center;gap:10px;}
+.copilot-head .dot-live{width:7px;height:7px;border-radius:50%;background:#3FBF8F;box-shadow:0 0 0 3px rgba(63,191,143,0.2);}
+.copilot-head span{font-family:var(--font-mono);font-size:11.5px;color:#9BA1A8;}
+.copilot-body{padding:22px;min-height:230px;}
+.copilot-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.copilot-chip{
+  font-family:var(--font-body);font-size:12.5px;padding:8px 14px;border-radius:var(--r-pill);
+  border:1px solid #333A41;background:#1B2126;color:#D6D9DD;text-align:left;
+}
+.copilot-chip:hover{border-color:var(--accent);color:#fff;}
+.copilot-query{font-family:var(--font-mono);font-size:13px;color:#6ED3A8;margin-bottom:14px;min-height:18px;}
+.copilot-query::before{content:"→ ";}
+.copilot-response{background:#1B2126;border:1px solid #262C32;border-radius:var(--r-sm);padding:16px 18px;display:none;}
+.copilot-response.show{display:block;}
+.copilot-response .r-title{font-weight:600;font-size:13.5px;margin-bottom:8px;color:#fff;}
+.copilot-response p{color:#AEB3B9;font-size:13px;margin-bottom:10px;}
+.copilot-response-meta{display:flex;gap:16px;padding-top:10px;border-top:1px solid #262C32;flex-wrap:wrap;}
+.copilot-response-meta div{font-family:var(--font-mono);font-size:11px;color:#787E86;}
+.copilot-response-meta b{color:#D6D9DD;font-weight:600;}
+.rm-item{display:flex;flex-direction:column;gap:3px;}
+.rm-k{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#5B6169;}
+.rm-v{font-family:var(--font-mono);font-size:12px;color:#D6D9DD;font-weight:600;}
+.copilot-chip.is-active{border-color:var(--accent);background:#241615;color:#fff;}
+.copilot-foot{padding:12px 20px;border-top:1px solid #262C32;font-family:var(--font-mono);font-size:10.5px;color:#565C64;}
+.typing{display:inline-flex;gap:3px;align-items:center;}
+.typing span{width:4px;height:4px;border-radius:50%;background:#6ED3A8;animation:blink 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,60%,100%{opacity:.25;}30%{opacity:1;}}
+
+/* --- Segment builder widget --- */
+.segbuilder{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;}
+.segbuilder-controls{padding:20px;background:var(--surface);display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.segfield label{display:block;font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin-bottom:6px;}
+.segfield select{
+  width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:var(--r-sm);
+  font-family:var(--font-body);font-size:13px;background:var(--surface);color:var(--ink);
+}
+.segbuilder-result{background:var(--ink);color:#fff;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.segresult-value{font-family:var(--font-mono);font-size:30px;font-weight:600;}
+.segresult-label{font-size:11.5px;color:#9BA1A8;margin-top:2px;}
+.segresult-actions{display:flex;gap:8px;}
+
+/* --- Journey tracker --- */
+.journey-track{display:flex;justify-content:space-between;position:relative;padding:20px 4px 4px;flex-wrap:wrap;row-gap:24px;}
+.journey-track::before{content:"";position:absolute;left:38px;right:38px;top:38px;height:2px;background:var(--line);z-index:1;}
+.journey-node{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;min-width:110px;text-align:center;}
+.journey-node .dot{width:38px;height:38px;border-radius:50%;background:var(--surface);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;color:var(--ink);position:relative;z-index:2;}
+.journey-node.is-risk .dot{border-color:var(--accent);color:var(--accent-dark);background:var(--accent-wash);}
+.journey-node.is-good .dot{border-color:var(--positive);color:var(--positive);background:var(--positive-wash);}
+.journey-node .lbl{font-family:var(--font-mono);font-size:10.5px;color:var(--ink);text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
+.journey-node .day{font-size:10px;color:var(--ink-faint);}
+
+.journey-detail{display:grid;grid-template-columns:200px 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);margin-bottom:14px;overflow:hidden;}
+.journey-detail-head{padding:20px;background:var(--surface-alt);border-right:1px solid var(--line);}
+.journey-detail-head .stage-icon{width:34px;height:34px;border-radius:var(--r-sm);background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.journey-detail-head h4{font-size:14.5px;margin-bottom:3px;}
+.journey-detail-head .day{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);}
+.journey-detail-col{padding:20px;border-right:1px solid var(--line-soft);}
+.journey-detail-col:last-child{border-right:none;background:#FCF8F8;}
+.journey-detail-col .lbl{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);display:block;margin-bottom:8px;}
+.journey-detail-col p{font-size:13px;margin-bottom:0;}
+
+/* --- Footer --- */
+.doc-footer{
+  flex:none;height:var(--footer-h);border-top:1px solid var(--line);background:var(--surface);
+  display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp-6);
+  font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);
+}
+.doc-footer a{color:var(--ink-soft);text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.doc-footer a:hover{color:var(--accent-dark);}
+.doc-footer .fdiv{margin:0 10px;color:var(--line);}
+
+/* --- Pulse waveform (signature motif) --- */
+.pulse-wave{stroke:var(--accent);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.pulse-anim{stroke-dasharray:340;stroke-dashoffset:340;animation:draw 2.6s ease-out forwards;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+
+/* --- Reveal-on-load --- */
+.reveal{opacity:0;transform:translateY(10px);animation:reveal .6s ease forwards;}
+@keyframes reveal{to{opacity:1;transform:none;}}
+
+/* --- Scrollbar (content) --- */
+.content-scroll::-webkit-scrollbar{width:10px;}
+.content-scroll::-webkit-scrollbar-thumb{background:#E2E0DB;border-radius:5px;border:3px solid var(--bg);}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1080px){
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:repeat(2,1fr);}
+  .segbuilder-controls{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:900px){
+  :root{--sidebar-w:264px;}
+  .section-title{font-size:30px;}
+  .grid-2{grid-template-columns:1fr;}
+}
+@media (max-width:760px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 0 100vmax rgba(0,0,0,0);}
+  .sidebar.is-open{transform:translateX(0);box-shadow:20px 0 60px rgba(0,0,0,.3);}
+  .menu-toggle{display:flex;}
+  .grid-3,.grid-4{grid-template-columns:1fr 1fr;}
+  .section-inner,.section-inner-wide{padding:0 var(--sp-5);}
+  .persona-stats{flex-wrap:wrap;}
+  .segbuilder-controls{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     ICON SPRITE
+     ============================================================ -->
+<svg style="display:none" aria-hidden="true">
+<defs>
+<symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></symbol>
+<symbol id="i-chev-r" viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></symbol>
+<symbol id="i-chev-l" viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></symbol>
+<symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5"/><line x1="19" y1="5" x2="10" y2="14"/><path d="M17 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5"/></symbol>
+<symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="1.5"/><rect x="9" y="2.5" width="6" height="3" rx="1"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="15" y2="15"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="17.6" r="0.6" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="15 8 13 13 8 15 10 10"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><polyline points="4 16 10 10 14 14 20 6"/><polyline points="14 6 20 6 20 12"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6"/><circle cx="17" cy="8.5" r="2.4"/><path d="M15.5 12.2c2.6.3 4.5 2.4 4.5 5.3"/></symbol>
+<symbol id="i-route" viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M5 8v3a3 3 0 0 0 3 3h8a3 3 0 0 1 3 3v1"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 3 21 8 12 13 3 8"/><polyline points="3 13 12 18 21 13"/><polyline points="3 17.5 12 22.5 21 17.5"/></symbol>
+<symbol id="i-workflow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 8.4V15.6"/><path d="M8.2 7l7.6 3.8"/><path d="M8.2 17l7.6-3.8"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.2"/><line x1="8" y1="20" x2="16" y2="20"/><line x1="12" y1="16" x2="12" y2="20"/><polyline points="6.5 12.5 10 8.5 13 11 17.5 6.5"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/><circle cx="12" cy="12" r="2.6"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1"/><rect x="3" y="14" width="18" height="6" rx="1"/><circle cx="7" cy="7" r="0.6" fill="currentColor" stroke="none"/><circle cx="7" cy="17" r="0.6" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6.5L4.5 19a1.5 1.5 0 0 0 1.3 2.3h12.4a1.5 1.5 0 0 0 1.3-2.3L14 9.5V3"/><line x1="7.5" y1="15" x2="16.5" y2="15"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="1.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="5.5"/><line x1="16" y1="2.5" x2="16" y2="5.5"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8.4-8 9.5C7.4 20.4 4 17 4 12V6l8-3Z"/><polyline points="8.5 12 11 14.5 15.5 9.5"/></symbol>
+<symbol id="i-rocket" viewBox="0 0 24 24"><path d="M12 2c3 2 5 6 5 10.5 0 1.5-.3 2.7-.6 3.5H7.6c-.3-.8-.6-2-.6-3.5C7 8 9 4 12 2Z"/><circle cx="12" cy="10" r="1.6"/><path d="M7.5 14.5 4 18l3-1"/><path d="M16.5 14.5 20 18l-3-1"/><path d="M10 19.5v2.3M14 19.5v2.3"/></symbol>
+<symbol id="i-telescope" viewBox="0 0 24 24"><path d="M3 10l13-5 2 5-13 5Z"/><line x1="9" y1="12" x2="6" y2="20"/><line x1="16" y1="10" x2="19" y2="17"/><circle cx="6.5" cy="20" r="1"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="0.6" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6"/></symbol>
+<symbol id="i-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6 19c1-3 3.2-4.5 6-4.5s5 1.5 6 4.5"/></symbol>
+<symbol id="i-arrow-r" viewBox="0 0 24 24"><line x1="4" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></symbol>
+<symbol id="i-pulse" viewBox="0 0 24 24"><polyline points="2 12 7 12 9.5 5 14 19 16.5 12 22 12"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><line x1="3" y1="12" x2="21" y2="12"/></symbol>
+</defs>
+</svg>
+
+<div class="app-shell">
+
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-row">
+        <span class="sidebar-wordmark">PULSE<span class="dot"></span></span>
+      </div>
+      <div class="sidebar-sub">AI-Assisted User Operations<br>Intelligence Platform</div>
+      <div class="sidebar-badge"><span class="dot-live"></span> CONCEPT PROPOSAL · KEETA</div>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-group">
+        <div class="nav-group-label">Overview</div>
+        <a href="#cover" class="nav-link" data-target="cover"><svg class="icon"><use href="#i-flag"/></svg>Cover</a>
+        <a href="#exec-summary" class="nav-link" data-target="exec-summary"><svg class="icon"><use href="#i-clipboard"/></svg>Executive Summary</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Strategy</div>
+        <a href="#problem" class="nav-link" data-target="problem"><svg class="icon"><use href="#i-alert"/></svg>Problem Statement</a>
+        <a href="#vision" class="nav-link" data-target="vision"><svg class="icon"><use href="#i-compass"/></svg>Vision &amp; Alignment</a>
+        <a href="#opportunity" class="nav-link" data-target="opportunity"><svg class="icon"><use href="#i-trend"/></svg>Opportunity Analysis</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Users</div>
+        <a href="#personas" class="nav-link" data-target="personas"><svg class="icon"><use href="#i-users"/></svg>User Personas</a>
+        <a href="#journey" class="nav-link" data-target="journey"><svg class="icon"><use href="#i-route"/></svg>User Journey</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Product</div>
+        <a href="#features" class="nav-link" data-target="features"><svg class="icon"><use href="#i-layers"/></svg>Feature Specifications</a>
+        <a href="#workflows" class="nav-link" data-target="workflows"><svg class="icon"><use href="#i-workflow"/></svg>Core Workflows</a>
+        <a href="#dashboards" class="nav-link" data-target="dashboards"><svg class="icon"><use href="#i-monitor"/></svg>Dashboard Wireframes</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Intelligence &amp; Tech</div>
+        <a href="#ai-opportunities" class="nav-link" data-target="ai-opportunities"><svg class="icon"><use href="#i-spark"/></svg>AI/ML Opportunities</a>
+        <a href="#architecture" class="nav-link" data-target="architecture"><svg class="icon"><use href="#i-server"/></svg>Technical Architecture</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Measuring Success</div>
+        <a href="#kpis" class="nav-link" data-target="kpis"><svg class="icon"><use href="#i-target"/></svg>KPIs &amp; Metrics</a>
+        <a href="#experimentation" class="nav-link" data-target="experimentation"><svg class="icon"><use href="#i-flask"/></svg>Experimentation</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Execution</div>
+        <a href="#roadmap" class="nav-link" data-target="roadmap"><svg class="icon"><use href="#i-map"/></svg>Implementation Roadmap</a>
+        <a href="#risks" class="nav-link" data-target="risks"><svg class="icon"><use href="#i-shield"/></svg>Risks &amp; Mitigations</a>
+        <a href="#impact" class="nav-link" data-target="impact"><svg class="icon"><use href="#i-rocket"/></svg>Expected Business Impact</a>
+        <a href="#future" class="nav-link" data-target="future"><svg class="icon"><use href="#i-telescope"/></svg>Future Enhancements</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Reference</div>
+        <a href="#appendix" class="nav-link" data-target="appendix"><svg class="icon"><use href="#i-info"/></svg>About &amp; Sources</a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-author">
+        <strong>Prepared by Krishna Nagpal</strong>
+        BITS Pilani, Dubai Campus
+        <a href="https://linkedin.com/in/krishnanagpal" target="_blank" rel="noopener"><svg class="icon icon-sm"><use href="#i-user-circle"/></svg>linkedin.com/in/krishnanagpal</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       MAIN CONTENT COLUMN
+       ============================================================ -->
+  <div class="content-col">
+
+    <div class="topbar">
+      <div class="topbar-crumb">
+        <button class="menu-toggle topbar-nav-btn" id="menuToggle" aria-label="Toggle navigation"><svg class="icon"><use href="#i-menu"/></svg></button>
+        <span>PULSE /</span> <b id="crumbLabel">Cover</b>
+      </div>
+      <div class="topbar-actions">
+        <span class="confidential-chip">Case study — not an official Meituan/Keeta document</span>
+        <button class="topbar-nav-btn" id="prevBtn" aria-label="Previous section"><svg class="icon"><use href="#i-chev-l"/></svg></button>
+        <button class="topbar-nav-btn" id="nextBtn" aria-label="Next section"><svg class="icon"><use href="#i-chev-r"/></svg></button>
+      </div>
+    </div>
+
+    <div class="content-scroll" id="contentScroll">
+
+      <!-- ============================================================
+           SECTION: COVER
+           ============================================================ -->
+      <section id="cover" class="doc-section is-active">
+        <div style="background:var(--cover-bg);color:var(--cover-ink);padding:96px 0 100px;">
+          <div class="section-inner">
+            <div class="reveal" style="animation-delay:.05s;display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#9BA1A8;border:1px solid #2B3138;padding:6px 12px;border-radius:999px;margin-bottom:40px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;"></span>
+              Internal Strategy Proposal — Concept Draft — July 2026
+            </div>
+
+            <h1 class="reveal" style="animation-delay:.12s;font-size:76px;line-height:0.98;color:#fff;letter-spacing:-0.02em;max-width:900px;">
+              PULSE<span style="color:var(--accent);">.</span>
+            </h1>
+            <div class="reveal" style="animation-delay:.18s;font-family:var(--font-display);font-size:23px;color:#D6D9DD;margin-top:14px;font-weight:500;max-width:720px;">
+              AI-Assisted User Operations Intelligence Platform
+            </div>
+            <p class="reveal" style="animation-delay:.24s;font-size:16.5px;color:#9BA1A8;max-width:620px;margin-top:20px;line-height:1.7;">
+              A proposal to unify retention, reactivation, engagement, and campaign intelligence across Keeta's international markets — turning scattered lifecycle data into predictive, human-approved action.
+            </p>
+
+            <div class="reveal" style="animation-delay:.3s;margin-top:56px;">
+              <svg viewBox="0 0 640 60" style="width:100%;max-width:640px;height:44px;">
+                <polyline class="pulse-wave pulse-anim" points="0,30 60,30 80,30 95,8 110,52 125,18 140,30 220,30 240,30 255,14 270,44 285,30 400,30 420,30 435,10 450,50 465,30 640,30"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-inner" style="padding-top:56px;">
+          <div class="callout disclaimer" style="margin-bottom:56px;">
+            <svg class="icon icon-lg"><use href="#i-info"/></svg>
+            <div>
+              <div class="callout-title">About this document</div>
+              <p>This proposal is an independent case study prepared by <strong>Krishna Nagpal</strong> for a User Operations Internship application. It is built entirely from <strong>publicly available information</strong> about Meituan and its international brand Keeta (news reporting, earnings disclosures, and industry research cited in the Appendix) and is intended to demonstrate product thinking, analytical structure, and cross-functional reasoning — <strong>not</strong> to represent Keeta's actual internal systems, data, roadmap, or strategy. Any figures presented as targets or models are clearly labeled as illustrative assumptions for the purpose of this exercise.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-bottom:64px;">
+            <div>
+              <div class="block-label">Prepared by</div>
+              <div style="font-family:var(--font-display);font-weight:600;font-size:16px;">Krishna Nagpal</div>
+              <div style="font-size:13px;color:var(--ink-faint);margin-top:2px;">BITS Pilani, Dubai Campus</div>
+            </div>
+            <div>
+              <div class="block-label">Prepared for</div>
+              <div style="font-size:14px;color:var(--ink-soft);">Product · User Operations · Growth · Engineering · Leadership</div>
+            </div>
+            <div>
+              <div class="block-label">Document status</div>
+              <div style="font-size:14px;color:var(--ink-soft);">Draft v1.0 — for discussion</div>
+            </div>
+            <div>
+              <div class="block-label">Date</div>
+              <div style="font-size:14px;color:var(--ink-soft);">July 2026</div>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="grid grid-3" style="margin-top:48px;">
+            <div class="card">
+              <svg class="icon icon-lg" style="color:var(--accent-dark);margin-bottom:14px;"><use href="#i-globe"/></svg>
+              <h3 class="h-md">Six markets, one blind spot</h3>
+              <p style="font-size:13.5px;">Keeta now operates across Hong Kong, Saudi Arabia, the UAE, Qatar, and Kuwait — each with its own behavior patterns, but no shared intelligence layer for user retention.</p>
+            </div>
+            <div class="card">
+              <svg class="icon icon-lg" style="color:var(--accent-dark);margin-bottom:14px;"><use href="#i-spark"/></svg>
+              <h3 class="h-md">The AI moment is now</h3>
+              <p style="font-size:13.5px;">Meituan Group is already betting heavily on AI — LongCat-2.0, Xiaotuan, Meituan Brain. PULSE proposes extending that muscle into the user-retention layer specifically.</p>
+            </div>
+            <div class="card">
+              <svg class="icon icon-lg" style="color:var(--accent-dark);margin-bottom:14px;"><use href="#i-target"/></svg>
+              <h3 class="h-md">Efficiency, not just growth</h3>
+              <p style="font-size:13.5px;">With new-initiatives losses still narrowing, the highest-leverage lever isn't more discounting — it's spending retention budget on the right user, automatically.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: EXECUTIVE SUMMARY
+           ============================================================ -->
+      <section id="exec-summary" class="doc-section">
+        <div class="section-inner">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>01 · Overview</div>
+            <h1 class="section-title">Executive Summary</h1>
+            <p class="section-dek">The one-page version: what's broken, what we're proposing, what it costs, and what it's worth.</p>
+          </div>
+
+          <div class="grid" style="grid-template-columns:1.5fr 1fr;gap:48px;margin-bottom:64px;align-items:start;">
+            <div>
+              <p class="lede">Keeta has spent three years proving a playbook — launch cheap, launch fast, win share with subsidies, then earn back margin. It has worked: Keeta is now Hong Kong's largest delivery platform by order volume, and a top-three player in Saudi Arabia within its first year. But the playbook's next phase — <strong>converting subsidized trial into durable, profitable retention across six-plus markets</strong> — is a fundamentally different problem, and it isn't one that low prices alone can solve.</p>
+              <p>Today, User Operations teams across markets manage retention with fragmented, market-specific spreadsheets and manual segment pulls, reacting to churn after it shows up in a monthly report instead of intervening while a user is still recoverable. Campaigns are largely blunt — broad discount blasts rather than the right offer to the right user — which is expensive at Keeta's current loss profile and slow to launch across time zones and languages.</p>
+              <p><strong>PULSE proposes a single AI-assisted intelligence layer</strong> that unifies user behavior across markets, predicts churn and reactivation propensity before it happens, and lets User Ops, Growth, and Marketing teams act on those predictions through one governed, self-serve platform — with a human always able to review, adjust, or override what the model recommends.</p>
+            </div>
+            <div class="card" style="background:var(--ink);border-color:var(--ink);">
+              <div class="block-label" style="color:#9BA1A8;">At a glance</div>
+              <table style="font-size:13px;">
+                <tbody>
+                <tr><td style="color:#9BA1A8;border-color:#262C32;padding-left:0;">Sponsoring functions</td><td style="color:#fff;border-color:#262C32;text-align:right;">Product · UserOps · Growth</td></tr>
+                <tr><td style="color:#9BA1A8;border-color:#262C32;padding-left:0;">Phase 1 timeline</td><td style="color:#fff;border-color:#262C32;text-align:right;">~90 days to MVP</td></tr>
+                <tr><td style="color:#9BA1A8;border-color:#262C32;padding-left:0;">Initial markets</td><td style="color:#fff;border-color:#262C32;text-align:right;">Hong Kong + KSA</td></tr>
+                <tr><td style="color:#9BA1A8;border-color:#262C32;padding-left:0;">Full rollout</td><td style="color:#fff;border-color:#262C32;text-align:right;">All GCC markets, ~12 mo</td></tr>
+                <tr><td style="color:#9BA1A8;border-color:transparent;padding-left:0;padding-bottom:0;">North Star metric</td><td style="color:#fff;border-color:transparent;text-align:right;padding-bottom:0;">D90 retained-user rate</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">The ask, in four moves</h2></div>
+            <div class="grid grid-4">
+              <div class="step-row" style="border:none;padding:0;flex-direction:column;">
+                <div class="step-num">01</div>
+                <h4 style="margin-top:10px;">Unify the data</h4>
+                <p>One user-360 profile per person, stitched across every Keeta market, replacing per-market spreadsheets.</p>
+              </div>
+              <div class="step-row" style="border:none;padding:0;flex-direction:column;">
+                <div class="step-num">02</div>
+                <h4 style="margin-top:10px;">Predict, don't react</h4>
+                <p>Churn, reactivation, and LTV models that flag risk 10–20 days before a user goes silent.</p>
+              </div>
+              <div class="step-row" style="border:none;padding:0;flex-direction:column;">
+                <div class="step-num">03</div>
+                <h4 style="margin-top:10px;">Act with precision</h4>
+                <p>A campaign orchestration layer that targets the right cohort with the right offer and channel — with a human approving spend.</p>
+              </div>
+              <div class="step-row" style="border:none;padding:0;flex-direction:column;">
+                <div class="step-num">04</div>
+                <h4 style="margin-top:10px;">Prove it, then scale</h4>
+                <p>A built-in experimentation layer so every campaign reports true incremental lift, not vanity engagement.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">Illustrative headline metrics</h2>
+              <span class="tag p1">Modeled targets — see Business Impact for assumptions</span>
+            </div>
+            <div class="grid grid-4" id="execKpis">
+              <div class="kpi-card reveal">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-trend"/></svg></div><div class="kpi-delta up">▲ target</div></div>
+                <div class="kpi-value" data-countup data-value="6" data-suffix=" pts">0 pts</div>
+                <div class="kpi-label">D90 retention uplift</div>
+                <div class="kpi-sub">Illustrative, AI-targeted cohorts vs. control</div>
+              </div>
+              <div class="kpi-card reveal">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-flask"/></svg></div><div class="kpi-delta up">▲ target</div></div>
+                <div class="kpi-value" data-countup data-value="18" data-suffix="%">0%</div>
+                <div class="kpi-label">Reactivation rate lift</div>
+                <div class="kpi-sub">Dormant users, AI-timed win-back vs. blast</div>
+              </div>
+              <div class="kpi-card reveal">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-workflow"/></svg></div><div class="kpi-delta up">▼ time</div></div>
+                <div class="kpi-value" data-countup data-value="85" data-suffix="%">0%</div>
+                <div class="kpi-label">Campaign setup time cut</div>
+                <div class="kpi-sub">Days-to-launch, manual vs. orchestrated</div>
+              </div>
+              <div class="kpi-card reveal">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-target"/></svg></div><div class="kpi-delta up">▲ target</div></div>
+                <div class="kpi-value" data-countup data-value="20" data-suffix="%">0%</div>
+                <div class="kpi-label">Lower cost per retained user</div>
+                <div class="kpi-sub">Vs. untargeted discount campaigns</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout note">
+            <svg class="icon"><use href="#i-info"/></svg>
+            <div><p style="margin-bottom:0;"><strong>Why now:</strong> Meituan closed FY2025 with revenue of RMB 364.9B (+8% YoY) but a net loss of RMB 23.4B as domestic competition and international investment both intensified; Q1 2026 showed the loss narrowing to roughly RMB 6.5–6.8B alongside a 22% YoY jump in R&amp;D spend toward AI. Leadership has been explicit — publicly opposing "internal competition" (price wars) and betting on AI-driven efficiency instead. A retention-focused AI platform is a direct, low-risk expression of that stated strategy, applied to the newest and most subsidy-dependent markets.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: PROBLEM STATEMENT
+           ============================================================ -->
+      <section id="problem" class="doc-section">
+        <div class="section-inner">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>02 · Strategy</div>
+            <h1 class="section-title">Problem Statement</h1>
+            <p class="section-dek">Keeta won the land grab. The next phase — converting subsidized trial into durable retention — is a different game, and today's tooling wasn't built to play it.</p>
+          </div>
+
+          <p class="lede" style="margin-bottom:56px;">Keeta's expansion since 2023 has been genuinely fast: number one in Hong Kong by order volume, a top-three position in Saudi Arabia inside its first year, and coverage across Qatar, Kuwait, and both core UAE cities added in a matter of weeks in late 2025. That speed was won largely on price — free delivery, steep first-order discounts, aggressive vouchering. Management has now said the quiet part out loud: Hong Kong took 29 months to reach positive monthly unit economics, Saudi Arabia is targeted to get there by the end of 2026, and CEO Wang Xing has publicly pushed back on "blind" expansion and price-war-style "internal competition." The mandate is shifting from <em>acquire share</em> to <em>earn it back profitably</em> — and retention, not acquisition, is where that margin has to come from. Four structural gaps stand in the way.</p>
+
+          <div class="grid grid-2" style="gap:24px;margin-bottom:24px;">
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div class="kpi-icon" style="background:var(--accent-wash);color:var(--accent-dark);"><svg class="icon"><use href="#i-globe"/></svg></div>
+                <h3 class="h-md">1 · Fragmented, market-siloed data</h3>
+              </div>
+              <p style="font-size:13.5px;">Every new Keeta market stands up its own local ops team and ad hoc reporting. Qatar, Kuwait, and the UAE's two core cities were all added within roughly 40 days of each other in Q3–Q4 2025 — a pace that all but guarantees each region reinvents its own segment logic rather than inheriting a shared one. A retention tactic proven in Hong Kong has no systematic path to informing the Riyadh or Doha playbook.</p>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div class="kpi-icon" style="background:var(--accent-wash);color:var(--accent-dark);"><svg class="icon"><use href="#i-alert"/></svg></div>
+                <h3 class="h-md">2 · Retention is reactive, not predictive</h3>
+              </div>
+              <p style="font-size:13.5px;">Churn is typically noticed only after a user has gone quiet for 30–90 days. In a market analysts describe as "one of the most competitive quick-commerce markets in the world" — five well-funded apps (Talabat, Careem, Noon, HungerStation, Jahez) one tap away — a user who's gone silent for a month has usually already formed a new habit elsewhere. Reactive win-back campaigns are fighting a battle that's frequently already lost.</p>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div class="kpi-icon" style="background:var(--accent-wash);color:var(--accent-dark);"><svg class="icon"><use href="#i-trend"/></svg></div>
+                <h3 class="h-md">3 · Discount-led economics, at an expensive moment</h3>
+              </div>
+              <p style="font-size:13.5px;">Keeta's growth motion — up to 70% first-order discounts, waived delivery fees, blanket vouchering — is a blunt instrument. It's efficient for capturing trial, inefficient for retention: it over-subsidizes users who'd have stayed anyway and under-serves the specific users actually at risk. That's expensive precisely when Meituan's core local-commerce segment has posted back-to-back operating losses and is under explicit pressure to narrow new-initiative losses.</p>
+            </div>
+            <div class="card">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                <div class="kpi-icon" style="background:var(--accent-wash);color:var(--accent-dark);"><svg class="icon"><use href="#i-workflow"/></svg></div>
+                <h3 class="h-md">4 · Ops velocity hasn't kept pace with launch velocity</h3>
+              </div>
+              <p style="font-size:13.5px;">Meituan's own reporting describes a deliberate "four-country linkage strategy" in the Gulf. That's an aggressive cadence for any team still designing campaigns market-by-market in spreadsheets — configuration effort scales linearly with each new city, when it should scale sub-linearly with a shared platform underneath it.</p>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">The gap, made concrete</h2>
+              <span class="tag p2">Illustrative — directional, not measured</span>
+            </div>
+            <div class="card">
+              <div class="block-label">Time from "user goes quiet" to "user is contacted"</div>
+              <div class="barchart" style="height:120px;">
+                <div class="bar-col">
+                  <div class="bar-val">~35–45 days</div>
+                  <div class="bar" style="height:100%;"></div>
+                  <div class="bar-lbl">TODAY — manual, monthly cohort pull</div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-val">~10–15 days</div>
+                  <div class="bar accent" style="height:32%;"></div>
+                  <div class="bar-lbl">PULSE — predictive, pre-churn trigger</div>
+                </div>
+              </div>
+              <p style="font-size:12.5px;color:var(--ink-faint);margin:14px 0 0;">Illustrative comparison to size the opportunity, not a measured baseline. See <a href="#experimentation" onclick="PULSE.showSection('experimentation');return false;">Experimentation Framework</a> for how this would actually be validated market-by-market.</p>
+            </div>
+          </div>
+
+          <div class="callout note">
+            <svg class="icon"><use href="#i-info"/></svg>
+            <div>
+              <div class="callout-title">Why this isn't just "spend more on retention"</div>
+              <p style="margin-bottom:0;">More retention budget without better targeting simply scales the inefficiency described in Problem 3. The binding constraint isn't willingness to invest — Meituan's Q1 2026 R&amp;D spend rose 22% year-on-year specifically toward AI — it's the absence of a system that tells Ops <em>which</em> user, <em>which</em> offer, and <em>which</em> moment will actually change the outcome.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: VISION & STRATEGIC ALIGNMENT
+           ============================================================ -->
+      <section id="vision" class="doc-section">
+        <div class="section-inner">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>02 · Strategy</div>
+            <h1 class="section-title">Product Vision &amp; Strategic Alignment</h1>
+            <p class="section-dek">What PULSE is trying to become, the principles it won't compromise on, and how it ladders up to where the company has publicly said it's headed.</p>
+          </div>
+
+          <div class="card" style="background:var(--ink);border-color:var(--ink);padding:40px 44px;margin-bottom:56px;">
+            <div class="block-label" style="color:#9BA1A8;">Vision statement</div>
+            <p style="font-family:var(--font-display);font-size:26px;font-weight:500;color:#fff;line-height:1.4;max-width:820px;margin-bottom:0;">
+              Every Keeta user's next best moment — a nudge, an offer, a fix, or simply being left alone — should be known before they ask for it, and every Ops team should be able to act on that knowledge in minutes, not weeks, in any market.
+            </p>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Five principles PULSE is designed around</h2></div>
+            <div class="grid grid-3">
+              <div class="card">
+                <span class="block-label">01 — Human-approved, not human-replaced</span>
+                <p style="font-size:13.5px;margin-bottom:0;">The platform recommends segments, offers, and timing. A person on the Ops or Growth team approves spend and messaging before it ships. AI expands judgment; it doesn't bypass it.</p>
+              </div>
+              <div class="card">
+                <span class="block-label">02 — Predict early, act precisely</span>
+                <p style="font-size:13.5px;margin-bottom:0;">Optimize for days-before-churn lead time and targeting precision over blast reach. A smaller, better-aimed campaign beats a bigger, blunter one.</p>
+              </div>
+              <div class="card">
+                <span class="block-label">03 — One platform, every market</span>
+                <p style="font-size:13.5px;margin-bottom:0;">Shared infrastructure, locally-tuned models. A new market inherits the platform on day one instead of rebuilding reporting from scratch.</p>
+              </div>
+              <div class="card">
+                <span class="block-label">04 — Prove incrementality, always</span>
+                <p style="font-size:13.5px;margin-bottom:0;">No campaign ships without a holdout. Lift is measured against a control group, not assumed from engagement metrics.</p>
+              </div>
+              <div class="card">
+                <span class="block-label">05 — Trust and privacy by design</span>
+                <p style="font-size:13.5px;margin-bottom:0;">Regional data-handling rules differ by market (Hong Kong, Saudi Arabia, and the UAE each have their own regime). Localization of data handling is a first-class design constraint, not an afterthought.</p>
+              </div>
+              <div class="card" style="background:var(--surface-alt);border-style:dashed;">
+                <span class="block-label">What PULSE deliberately does not do</span>
+                <p style="font-size:13.5px;margin-bottom:0;">It does not set pricing or commission strategy, manage merchant or courier supply, or auto-send campaigns without a human approval step in Phase 1–2. Scope is retention, reactivation, and engagement intelligence for the end consumer.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">Strategic alignment</h2>
+              <span class="tag p2">Mapped to publicly stated company direction</span>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Publicly stated direction</th><th style="width:20%;">Public source signal</th><th>How PULSE advances it</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="strong">AI-first restructuring over price-led growth</td>
+                    <td>Wang Xing: "firmly oppose internal competition"; Q1 2026 R&amp;D +22% YoY toward AI; Xiaotuan elevated to app homepage; LongCat-2.0 open-sourced</td>
+                    <td>PULSE is a direct, low-capex application of that stated bet — using prediction and personalization to reduce reliance on blanket discounting specifically inside retention spend.</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Path to positive unit economics per market</td>
+                    <td>Hong Kong: profitable after 29 months. Saudi Arabia: guided to profitability by end of 2026</td>
+                    <td>Retention efficiency is a direct lever on the cost side of the unit-economics equation — every point of D90 retention gained without added discount spend improves contribution margin.</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">"Focused," disciplined international expansion</td>
+                    <td>Wang Xing (Mar 2026): warned against "blind" global push amid Brazil's early-stage, smaller-scale results</td>
+                    <td>A shared platform is how "focused" expansion actually scales — new markets (Bahrain, Oman, and beyond) launch onto existing intelligence infrastructure instead of each rebuilding it.</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Group-wide AI investment (Meituan Brain, LongCat, Xiaotuan)</td>
+                    <td>Real-time dispatch ML; recommendation/intent engines; 1.6T-parameter LongCat-2.0; agentic assistant Xiaotuan</td>
+                    <td>PULSE is designed to sit on top of this existing muscle rather than duplicate it — reusing group-level ML and LLM infrastructure for a use case (retention) it isn't yet pointed at.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: OPPORTUNITY ANALYSIS
+           ============================================================ -->
+      <section id="opportunity" class="doc-section">
+        <div class="section-inner">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>02 · Strategy</div>
+            <h1 class="section-title">Opportunity Analysis</h1>
+            <p class="section-dek">Sizing the market Keeta is fighting for, the share it currently holds, and the slice of that fight retention intelligence can realistically move.</p>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">The market Keeta is competing in</h2></div>
+            <div class="grid grid-4">
+              <div class="kpi-card">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-globe"/></svg></div></div>
+                <div class="kpi-value">$25–30B</div>
+                <div class="kpi-label">GCC food-delivery market, 2024–25</div>
+                <div class="kpi-sub">Public market research; Saudi Arabia ≈ 40% of the six-state total</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-trend"/></svg></div></div>
+                <div class="kpi-value">15.2%</div>
+                <div class="kpi-label">Saudi delivery-apps CAGR, 2026–31</div>
+                <div class="kpi-sub">$9.6B (2026) projected to $19.5B by 2031</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-monitor"/></svg></div></div>
+                <div class="kpi-value">$47B</div>
+                <div class="kpi-label">GCC quick-commerce GMV forecast, 2030</div>
+                <div class="kpi-sub">Saudi Arabia alone ≈ $20B of that total (Redseer)</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-shield"/></svg></div></div>
+                <div class="kpi-value">5+</div>
+                <div class="kpi-label">Funded competitors per Gulf market</div>
+                <div class="kpi-sub">Talabat, Careem, Noon, HungerStation, Jahez, Mrsool</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">Where Keeta stands today</h2>
+              <span class="tag p2">Third-party market-share estimates, most recent available</span>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Market</th><th>Keeta position</th><th>Est. share</th><th>Leading incumbent(s)</th><th>Context</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Hong Kong</td><td><span class="tag positive">No. 1 by order volume</span></td><td class="mono">~43%+</td><td>Foodpanda (No. 2); Deliveroo exited Apr 2025</td><td>Reached positive monthly unit economics ~Oct 2025, 29 months after launch</td></tr>
+                  <tr><td class="strong">Saudi Arabia</td><td><span class="tag p1">No. 3</span></td><td class="mono">~10–11%</td><td>HungerStation (~50% major cities), Jahez (~30–33%)</td><td>Guided to positive monthly unit economics by end of 2026</td></tr>
+                  <tr><td class="strong">UAE (Dubai + Abu Dhabi)</td><td><span class="tag p2">Early entrant</span></td><td class="mono">Emerging</td><td>Talabat, Careem, Noon Food, Deliveroo</td><td>Full two-city coverage achieved Oct 2025, ~40 days after Dubai launch</td></tr>
+                  <tr><td class="strong">Qatar &amp; Kuwait</td><td><span class="tag p2">Early entrant</span></td><td class="mono">Emerging</td><td>Talabat regional incumbency</td><td>Launched Aug–Sep 2025 as part of the Gulf rollout sequence</td></tr>
+                  <tr><td class="strong">Brazil</td><td><span class="tag p2">Pilot stage</span></td><td class="mono">Nascent</td><td>iFood incumbency</td><td>Publicly flagged by leadership as early-stage and smaller-scale vs. the Middle East</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">Sizing the retention opportunity</h2>
+              <span class="tag p1">Illustrative funnel — for methodology demonstration only</span>
+            </div>
+            <p style="font-size:13.5px;max-width:760px;">Keeta does not publish user-level retention figures, so the funnel below uses <strong>illustrative, clearly-labeled proportions</strong> — informed by commonly cited retention benchmarks in on-demand delivery, not by any non-public Keeta data — to demonstrate how a User Ops team would actually reason through this sizing exercise.</p>
+            <div class="card" style="padding:32px;">
+              <div style="display:flex;flex-direction:column;gap:2px;max-width:760px;margin:0 auto;">
+                <div style="background:var(--ink);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--r-sm) var(--r-sm) 0 0;">
+                  <span style="font-size:13.5px;">Monthly active users, launch markets (HK + KSA)</span>
+                  <span class="mono" style="font-weight:600;">100% base</span>
+                </div>
+                <div style="background:#3A4148;color:#fff;padding:16px 24px 16px 56px;display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13.5px;">"At-risk" tier — declining order frequency or 21–45 days quiet</span>
+                  <span class="mono" style="font-weight:600;">~20–25%*</span>
+                </div>
+                <div style="background:var(--accent-dark);color:#fff;padding:16px 24px 16px 96px;display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13.5px;">Reachable &amp; model-scoreable (sufficient behavioral history)</span>
+                  <span class="mono" style="font-weight:600;">~70% of at-risk*</span>
+                </div>
+                <div style="background:var(--accent);color:#fff;padding:16px 24px 16px 140px;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 var(--r-sm) var(--r-sm);">
+                  <span style="font-size:13.5px;">Realistic Phase-1 target cohort for AI-assisted intervention</span>
+                  <span class="mono" style="font-weight:600;">~10–14% of MAU*</span>
+                </div>
+              </div>
+              <p style="font-size:11.5px;color:var(--ink-faint);margin:16px 0 0;">*Illustrative assumptions for sizing methodology, not measured Keeta figures. Industry-typical "at-risk" bands for on-demand consumer apps commonly cited in public retention research range roughly 15–30% of MAU depending on definition and market maturity.</p>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Proof this category of investment pays off</h2></div>
+            <div class="grid grid-4">
+              <div class="card"><span class="block-label">Uber</span><p style="font-size:13px;margin-bottom:0;">Publicly documented its internal ML platform ("Michelangelo") as shared infrastructure spanning pricing, marketplace, and growth use cases at company scale.</p></div>
+              <div class="card"><span class="block-label">Airbnb</span><p style="font-size:13px;margin-bottom:0;">Has written extensively about its experimentation culture and internal ML platform as prerequisites for trustworthy, fast product decisions.</p></div>
+              <div class="card"><span class="block-label">DoorDash</span><p style="font-size:13px;margin-bottom:0;">Engineering blog has detailed applying ML to lifecycle marketing and personalized promotions rather than blanket discounting.</p></div>
+              <div class="card"><span class="block-label">Grab</span><p style="font-size:13px;margin-bottom:0;">Has publicly discussed in-house experimentation platforms built specifically to move fast across many Southeast Asian markets at once.</p></div>
+            </div>
+          </div>
+
+          <div class="callout positive">
+            <svg class="icon"><use href="#i-check"/></svg>
+            <div>
+              <div class="callout-title">Why the timing is favorable right now</div>
+              <p style="margin-bottom:0;">Group-level AI infrastructure just became more reusable, not less: LongCat-2.0 (1.6T-parameter model) was open-sourced at the end of June 2026, and Xiaotuan was elevated to the app's homepage in April 2026 — both signal AI is now core infrastructure, not a side project. Saudi Arabia's national regulator (SDAIA) has additionally designated 2026 its "Year of AI," a local tailwind for AI-forward positioning in Keeta's most strategically important new market.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: USER PERSONAS
+           ============================================================ -->
+      <section id="personas" class="doc-section">
+        <div class="section-inner">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>03 · Users</div>
+            <h1 class="section-title">User Personas</h1>
+            <p class="section-dek">Two audiences matter here: the Ops and Growth people who'll use PULSE every day, and the customer behavior patterns the platform has to recognize on their behalf.</p>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">Platform personas — who uses PULSE</h2>
+              <span class="tag p2">Internal · primary design target</span>
+            </div>
+            <div class="grid grid-3">
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar">P</div>
+                  <div>
+                    <div class="persona-name">Priya</div>
+                    <div class="persona-role">Regional User Ops Manager — Gulf</div>
+                  </div>
+                </div>
+                <div class="persona-body">
+                  <h5>Owns</h5>
+                  <p>Retention &amp; reactivation campaigns for KSA and, increasingly, the newer Gulf markets.</p>
+                  <h5>Today, this is frustrating because</h5>
+                  <p>She pulls cohort exports manually every Monday, waits on a data analyst for anything beyond basic filters, and often finds out a segment is churning only after the monthly report — by which point the window to act cheaply has passed.</p>
+                  <h5>What she needs from PULSE</h5>
+                  <p>A ranked, explainable list of at-risk users updated daily, and a way to launch a targeted offer in the same sitting — without opening a ticket with Engineering.</p>
+                </div>
+                <div class="persona-stats">
+                  <div class="persona-stat"><div class="v">4</div><div class="l">Markets owned</div></div>
+                  <div class="persona-stat"><div class="v">~9h</div><div class="l">Wk on manual reporting</div></div>
+                  <div class="persona-stat"><div class="v">2–3</div><div class="l">Campaigns launched / mo</div></div>
+                </div>
+              </div>
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar">A</div>
+                  <div>
+                    <div class="persona-name">Alex</div>
+                    <div class="persona-role">Growth &amp; Analytics Lead — HQ</div>
+                  </div>
+                </div>
+                <div class="persona-body">
+                  <h5>Owns</h5>
+                  <p>Cross-market retention reporting and ad hoc analysis requests from Product and Leadership.</p>
+                  <h5>Today, this is frustrating because</h5>
+                  <p>Roughly two-thirds of the week goes to reconciling definitions across markets ("churned" means something slightly different in every regional spreadsheet) rather than producing insight. Every new market adds another dialect to translate.</p>
+                  <h5>What Alex needs from PULSE</h5>
+                  <p>One shared definition layer and a self-serve exploration tool, so market comparisons are apples-to-apples without a week of manual reconciliation.</p>
+                </div>
+                <div class="persona-stats">
+                  <div class="persona-stat"><div class="v">6+</div><div class="l">Markets reconciled</div></div>
+                  <div class="persona-stat"><div class="v">~65%</div><div class="l">Time on data wrangling</div></div>
+                  <div class="persona-stat"><div class="v">1–2 wk</div><div class="l">Turnaround per request</div></div>
+                </div>
+              </div>
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar">W</div>
+                  <div>
+                    <div class="persona-name">Wei</div>
+                    <div class="persona-role">Head of User Operations — International</div>
+                  </div>
+                </div>
+                <div class="persona-body">
+                  <h5>Owns</h5>
+                  <p>Cross-market retention strategy and the budget conversation with Leadership on where subsidy dollars go next.</p>
+                  <h5>Today, this is frustrating because</h5>
+                  <p>Every budget review requires stitching together market-by-market decks with inconsistent methodology, making it hard to say with confidence which markets deserve more retention spend and which need a different playbook entirely.</p>
+                  <h5>What Wei needs from PULSE</h5>
+                  <p>One executive rollup with consistent, incrementality-tested numbers across every market — a single source of truth for "is this working."</p>
+                </div>
+                <div class="persona-stats">
+                  <div class="persona-stat"><div class="v">All</div><div class="l">Markets, one view</div></div>
+                  <div class="persona-stat"><div class="v">Qtrly</div><div class="l">Budget defense cadence</div></div>
+                  <div class="persona-stat"><div class="v">1</div><div class="l">Source of truth (target)</div></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">Customer behavioral archetypes — what PULSE has to recognize</h2>
+              <span class="tag p2">Illustrative segmentation logic, not real user data</span>
+            </div>
+            <div class="grid grid-2">
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar" style="background:var(--positive);">HC</div>
+                  <div><div class="persona-name">The Habitual Commuter</div><div class="persona-role">Low risk · protect, don't over-spend</div></div>
+                </div>
+                <div class="persona-body">
+                  <p>Orders on a predictable weekly rhythm — often lunch on workdays. Price-tolerant within reason; churns mainly on <em>service failures</em> (a late order, a bad substitution) rather than price.</p>
+                  <h5>Recommended lever</h5>
+                  <p>Service-recovery triggers over discounts — a fast apology credit after a bad delivery protects this cohort more efficiently than an untargeted promo ever would.</p>
+                </div>
+              </div>
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar" style="background:var(--warning);">DC</div>
+                  <div><div class="persona-name">The Deal-Chaser</div><div class="persona-role">High churn-recurrence · cap the spend</div></div>
+                </div>
+                <div class="persona-body">
+                  <p>Multi-homes across three or more delivery apps and orders wherever the discount is largest that week. Historically the easiest segment to "reactivate" and the fastest to churn right back.</p>
+                  <h5>Recommended lever</h5>
+                  <p>The model's job here is largely <em>containment</em> — recognize this pattern early and cap incremental discount spend rather than chase a cohort with structurally low loyalty.</p>
+                </div>
+              </div>
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar" style="background:var(--ink-faint);">NU</div>
+                  <div><div class="persona-name">The New / Onboarding User</div><div class="persona-role">Highest-risk window · days 0–30</div></div>
+                </div>
+                <div class="persona-body">
+                  <p>Signed up on a first-order voucher; hasn't yet formed a habit. Industry-wide, the steepest drop-off in any delivery app happens inside the first month.</p>
+                  <h5>Recommended lever</h5>
+                  <p>Habit-formation nudges (second and third-order prompts, curated restaurant picks) rather than repeated discounting, which teaches this cohort to wait for the next voucher instead of ordering.</p>
+                </div>
+              </div>
+
+              <div class="persona-card">
+                <div class="persona-head">
+                  <div class="persona-avatar" style="background:var(--accent-dark);">QS</div>
+                  <div><div class="persona-name">The Quietly Slipping User</div><div class="persona-role">Priority target · highest ROI to catch early</div></div>
+                </div>
+                <div class="persona-body">
+                  <p>Was a regular; order frequency has declined over the past 3–4 weeks but hasn't gone fully dormant yet. Not visible in a standard "30-day-silent" churn report — which is exactly why it's the most valuable segment to catch.</p>
+                  <h5>Recommended lever</h5>
+                  <p>This is PULSE's core bet: a well-timed, modest nudge here is far cheaper than a large win-back offer after full churn. See <a href="#journey" onclick="PULSE.showSection('journey');return false;">User Journey</a> for where this intervention actually fires.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: USER JOURNEY
+           ============================================================ -->
+      <section id="journey" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>03 · Users</div>
+            <h1 class="section-title">User Journey</h1>
+            <p class="section-dek">Seven stages from first install to habit — and the one stage, easy to miss today, where PULSE is designed to make the biggest difference.</p>
+          </div>
+
+          <div class="card" style="padding:28px 32px;margin-bottom:20px;">
+            <div class="journey-track">
+              <div class="journey-node"><div class="dot"><svg class="icon icon-sm"><use href="#i-rocket"/></svg></div><div class="lbl">Acquire</div><div class="day">Day 0</div></div>
+              <div class="journey-node"><div class="dot"><svg class="icon icon-sm"><use href="#i-users"/></svg></div><div class="lbl">Onboard</div><div class="day">Day 0–7</div></div>
+              <div class="journey-node is-good"><div class="dot"><svg class="icon icon-sm"><use href="#i-check"/></svg></div><div class="lbl">Activate</div><div class="day">Day 7–30</div></div>
+              <div class="journey-node is-good"><div class="dot"><svg class="icon icon-sm"><use href="#i-target"/></svg></div><div class="lbl">Thrive</div><div class="day">Day 30+</div></div>
+              <div class="journey-node is-risk"><div class="dot"><svg class="icon icon-sm"><use href="#i-trend"/></svg></div><div class="lbl">Waver</div><div class="day">Wk 3–6 decline</div></div>
+              <div class="journey-node is-risk"><div class="dot"><svg class="icon icon-sm"><use href="#i-alert"/></svg></div><div class="lbl">Go Quiet</div><div class="day">Day 45–90</div></div>
+              <div class="journey-node"><div class="dot"><svg class="icon icon-sm"><use href="#i-route"/></svg></div><div class="lbl">Win Back</div><div class="day">Triggered</div></div>
+            </div>
+            <p style="font-size:12px;color:var(--ink-faint);text-align:center;margin:6px 0 0;">↩ A successful win-back loops the user back into <strong>Thrive</strong>. PULSE's core thesis: intervening at <strong>Waver</strong> is far cheaper than winning back at <strong>Go Quiet</strong>.</p>
+          </div>
+
+          <div class="block" style="margin-top:48px;">
+            <div class="block-head"><h2 class="h-lg">Stage by stage</h2></div>
+
+            <div class="journey-detail">
+              <div class="journey-detail-head"><div class="stage-icon"><svg class="icon"><use href="#i-rocket"/></svg></div><h4>1 · Acquisition</h4><div class="day">Day 0</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>User arrives via a first-order voucher or delivery-fee waiver — Keeta's proven playbook for winning trial in a new market.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p>Out of scope by design — acquisition stays with Growth/Marketing acquisition tooling. PULSE's data contract begins capturing signal from first order onward.</p></div>
+            </div>
+
+            <div class="journey-detail">
+              <div class="journey-detail-head"><div class="stage-icon"><svg class="icon"><use href="#i-users"/></svg></div><h4>2 · Onboarding</h4><div class="day">Day 0–7 · New/Onboarding User</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>No systematic second-order nudge. Industry-wide, this window sees the steepest drop-off of any stage — and Keeta currently treats it the same as every other stage.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p>Time-boxed habit-formation nudges (curated picks, a light second-order prompt) instead of a second discount — teaching ordering behavior, not voucher-waiting behavior.</p></div>
+            </div>
+
+            <div class="journey-detail">
+              <div class="journey-detail-head"><div class="stage-icon"><svg class="icon"><use href="#i-check"/></svg></div><h4>3 · Activation</h4><div class="day">Day 7–30</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>Whether a user "sticks" is discovered only in hindsight, at month-end, when it's too late to influence this specific user's activation.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p>An early activation-propensity score by day 10–14, flagging users trending toward non-activation while there's still time to intervene.</p></div>
+            </div>
+
+            <div class="journey-detail">
+              <div class="journey-detail-head"><div class="stage-icon"><svg class="icon"><use href="#i-target"/></svg></div><h4>4 · Thrive (habitual engagement)</h4><div class="day">Day 30+ · Habitual Commuter</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>Healthy users are sometimes still targeted with blanket discounts they didn't need to stay — pure margin leakage.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p>Suppress this cohort from generic promo blasts; reserve service-recovery credits for genuine delivery failures only.</p></div>
+            </div>
+
+            <div class="journey-detail" style="border-color:var(--accent);">
+              <div class="journey-detail-head" style="background:var(--accent-wash);"><div class="stage-icon" style="background:var(--accent);"><svg class="icon"><use href="#i-trend"/></svg></div><h4>5 · Waver <span class="tag p0" style="margin-left:4px;">Priority</span></h4><div class="day">Wk 3–6 declining frequency · Quietly Slipping User</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>Invisible. Standard "30/60/90-day silent" churn reports don't catch a user who's merely ordering less often — this is the gap Problem Statement #2 describes.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p><strong>The single highest-leverage moment in the journey.</strong> The churn-propensity model is tuned specifically to catch declining-frequency patterns 10–20 days before full dormancy, triggering a modest, personalized nudge while the habit is still recoverable.</p></div>
+            </div>
+
+            <div class="journey-detail">
+              <div class="journey-detail-head"><div class="stage-icon"><svg class="icon"><use href="#i-alert"/></svg></div><h4>6 · Go Quiet (dormancy)</h4><div class="day">Day 45–90+ silent</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>Caught by the monthly report; a large, expensive win-back voucher is the default response, often to a user who has already switched habits to a competitor.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p>Reactivation-propensity scoring separates "worth a large incentive" from "structurally low-loyalty, cap the spend" — see Deal-Chaser archetype.</p></div>
+            </div>
+
+            <div class="journey-detail">
+              <div class="journey-detail-head"><div class="stage-icon"><svg class="icon"><use href="#i-route"/></svg></div><h4>7 · Win-back attempt</h4><div class="day">Triggered, outcome tracked</div></div>
+              <div class="journey-detail-col"><span class="lbl">Today</span><p>Campaign success is usually measured by redemption rate, not true incremental orders — so it's unclear how much of the "win-back" would have happened anyway.</p></div>
+              <div class="journey-detail-col"><span class="lbl">PULSE's role</span><p>Every win-back campaign ships with a holdout group by default, so lift is measured, not assumed. See <a href="#experimentation" onclick="PULSE.showSection('experimentation');return false;">Experimentation Framework</a>.</p></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: FEATURE SPECIFICATIONS
+           ============================================================ -->
+      <section id="features" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>04 · Product</div>
+            <h1 class="section-title">Feature Specifications</h1>
+            <p class="section-dek">Nine modules, from the shared data foundation up to a forward-looking natural-language copilot. Priority reflects sequencing, not importance.</p>
+          </div>
+
+          <div class="grid grid-2" style="gap:20px;">
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-users"/></svg></div><div><div class="feature-title">Unified User 360 Profile</div><div class="feature-meta">Foundation layer</div></div></div>
+                <span class="tag p0">P0</span>
+              </div>
+              <p style="font-size:13.5px;">One behavioral profile per person, stitched across every market they've used Keeta in, replacing per-market spreadsheets with a single canonical record.</p>
+              <ul class="feature-list">
+                <li>Cross-market identity resolution (same user, multiple cities/countries)</li>
+                <li>Order history, frequency, recency, basket value, cancellation &amp; complaint signals</li>
+                <li>App engagement events (opens, browse depth, search-no-order)</li>
+                <li>Consolidated support &amp; feedback sentiment history</li>
+                <li>Single "churned" / "at-risk" definition shared across all markets</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-spark"/></svg></div><div><div class="feature-title">Predictive Intelligence Engine</div><div class="feature-meta">Churn · reactivation · LTV · next-best-action</div></div></div>
+                <span class="tag p0">P0</span>
+              </div>
+              <p style="font-size:13.5px;">The models that turn behavioral history into a forward-looking risk and opportunity score per user, refreshed daily.</p>
+              <ul class="feature-list">
+                <li>Churn-propensity score with a 10–20 day lead window (see AI/ML Opportunities)</li>
+                <li>Reactivation-propensity score for already-dormant users</li>
+                <li>Predicted lifetime value, to size how much incentive a user is worth</li>
+                <li>Next-best-action recommendation (nudge, offer, service recovery, or leave alone)</li>
+                <li>Every score ships with a plain-language explanation, not just a number</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-monitor"/></svg></div><div><div class="feature-title">Real-Time Ops Dashboard &amp; Alerting</div><div class="feature-meta">Command center</div></div></div>
+                <span class="tag p0">P0</span>
+              </div>
+              <p style="font-size:13.5px;">The daily home screen for Priya and every Regional Ops Manager — what's happening right now, and what needs attention today.</p>
+              <ul class="feature-list">
+                <li>Live retention, reactivation, and at-risk-pool counts by market</li>
+                <li>Anomaly alerts (e.g., a sudden churn spike in one city)</li>
+                <li>Drill-down from a market-level number to the underlying user list</li>
+                <li>Configurable thresholds per market, since a "normal" week in Riyadh isn't a normal week in Hong Kong</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-shield"/></svg></div><div><div class="feature-title">Governance, Privacy &amp; Guardrails</div><div class="feature-meta">Trust layer</div></div></div>
+                <span class="tag p0">P0</span>
+              </div>
+              <p style="font-size:13.5px;">Not a bolt-on compliance checkbox — the mechanism that keeps "AI-assisted" honest, from day one.</p>
+              <ul class="feature-list">
+                <li>Human approval required before any campaign spends budget or sends a message</li>
+                <li>Per-market data residency and access rules, configurable by region</li>
+                <li>Full audit trail: which model, which version, which human approved what</li>
+                <li>Frequency caps so no user gets over-messaged across overlapping campaigns</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-layers"/></svg></div><div><div class="feature-title">Smart Segmentation &amp; Audience Builder</div><div class="feature-meta">Self-serve targeting</div></div></div>
+                <span class="tag p1">P1</span>
+              </div>
+              <p style="font-size:13.5px;">Lets Ops build a precise audience without waiting on a data analyst — see the live demo in Dashboard Wireframes.</p>
+              <ul class="feature-list">
+                <li>Point-and-click filters on any 360-profile attribute or model score</li>
+                <li>AI-suggested segments ("users like your last successful campaign's responders")</li>
+                <li>Live, pre-send audience-size estimate</li>
+                <li>Segments are dynamic — membership updates automatically as behavior changes</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-workflow"/></svg></div><div><div class="feature-title">Campaign Orchestration &amp; Personalization</div><div class="feature-meta">Act on the prediction</div></div></div>
+                <span class="tag p1">P1</span>
+              </div>
+              <p style="font-size:13.5px;">Turns a segment and a recommendation into a live, multi-channel campaign — with a spend guardrail built in.</p>
+              <ul class="feature-list">
+                <li>Push, in-app, SMS, and email orchestration from one brief</li>
+                <li>Offer-value optimization within a set budget ceiling, not open-ended discounting</li>
+                <li>Localized copy and timing per market (Ramadan-aware scheduling for KSA/UAE, for example)</li>
+                <li>One-click approval workflow before anything ships</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-flask"/></svg></div><div><div class="feature-title">Experimentation &amp; Optimization Hub</div><div class="feature-meta">Prove it, then scale it</div></div></div>
+                <span class="tag p1">P1</span>
+              </div>
+              <p style="font-size:13.5px;">The mechanism behind Principle 04 — no campaign ships without a way to measure whether it actually worked.</p>
+              <ul class="feature-list">
+                <li>Built-in holdout / control-group management, applied by default</li>
+                <li>Standardized significance and minimum-detectable-effect calculators</li>
+                <li>Phased, market-by-market rollout tooling</li>
+                <li>(P2) Multi-armed-bandit auto-optimization once a test reaches confidence</li>
+              </ul>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon"><svg class="icon"><use href="#i-clipboard"/></svg></div><div><div class="feature-title">Insights &amp; Reporting Layer</div><div class="feature-meta">For Wei's Monday morning</div></div></div>
+                <span class="tag p1">P1</span>
+              </div>
+              <p style="font-size:13.5px;">Turns the platform's data into the executive rollups and budget-defense material Leadership actually needs.</p>
+              <ul class="feature-list">
+                <li>Automated weekly executive digest, one page, every market</li>
+                <li>Self-serve BI layer for ad hoc questions without an analyst ticket</li>
+                <li>Consistent methodology, so cross-market comparisons are trustworthy</li>
+              </ul>
+            </div>
+
+            <div class="feature-card" style="grid-column:1/-1;background:var(--ink);border-color:var(--ink);">
+              <div class="feature-top">
+                <div style="display:flex;gap:14px;"><div class="feature-icon" style="background:var(--accent);"><svg class="icon"><use href="#i-spark"/></svg></div><div><div class="feature-title" style="color:#fff;">PULSE Copilot — Natural-Language Ops Assistant</div><div class="feature-meta" style="color:#9BA1A8;">Forward-looking · Phase 3</div></div></div>
+                <span class="tag p2" style="background:#1B2126;border-color:#333A41;color:#D6D9DD;">P2</span>
+              </div>
+              <p style="font-size:13.5px;color:#AEB3B9;max-width:640px;">A conversational layer over everything above — ask a question in plain language, get a scoped segment, a drafted campaign brief, or a diagnosis of a metric change. Try the concept demo in <a href="#ai-opportunities" onclick="PULSE.showSection('ai-opportunities');return false;" style="color:#6ED3A8;">AI/ML Opportunities →</a></p>
+              <ul class="feature-list" style="max-width:640px;">
+                <li style="color:#AEB3B9;">"Show me users in Riyadh with declining order frequency" → auto-built segment</li>
+                <li style="color:#AEB3B9;">"Draft a win-back offer for lapsed high-LTV users in Hong Kong" → draft brief for human review</li>
+                <li style="color:#AEB3B9;">"Why did Kuwait's D30 retention drop last week?" → guided root-cause walkthrough</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: CORE WORKFLOWS
+           ============================================================ -->
+      <section id="workflows" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>04 · Product</div>
+            <h1 class="section-title">Core Workflows</h1>
+            <p class="section-dek">One system-level loop, and two operator-level workflows that run inside it.</p>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">The core loop — predict, act, learn</h2>
+              <span class="tag p2">System workflow</span>
+            </div>
+            <div class="diagram-frame">
+              <svg viewBox="0 0 1120 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="#14181C"/>
+                  </marker>
+                  <marker id="arrowhead-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="#D62B2B"/>
+                  </marker>
+                </defs>
+
+                <!-- connecting arrows -->
+                <line x1="175" y1="90" x2="194" y2="90" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="351" y1="90" x2="370" y2="90" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="527" y1="90" x2="546" y2="90" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="703" y1="90" x2="722" y2="90" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="879" y1="90" x2="898" y2="90" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+
+                <!-- feedback loop -->
+                <path d="M 977.5,140 L 977.5,205 L 449.5,205 L 449.5,142" fill="none" stroke="#D62B2B" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arrowhead-red)"/>
+                <text x="713" y="221" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#B4740E">outcomes retrain the model — weekly</text>
+
+                <!-- box 1 -->
+                <rect x="20" y="40" width="155" height="100" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="34" y="58" font-family="IBM Plex Mono, monospace" font-size="11" fill="#D62B2B">01</text>
+                <text x="97.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#14181C">Behavioral Data</text>
+                <text x="97.5" y="105" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#7C828A">Ingestion — all markets</text>
+
+                <!-- box 2 -->
+                <rect x="196" y="40" width="155" height="100" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="210" y="58" font-family="IBM Plex Mono, monospace" font-size="11" fill="#D62B2B">02</text>
+                <text x="273.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#14181C">User 360</text>
+                <text x="273.5" y="105" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#7C828A">Feature store</text>
+
+                <!-- box 3 -->
+                <rect x="372" y="40" width="155" height="100" rx="4" fill="#FBEAEA" stroke="#D62B2B" stroke-width="1.6"/>
+                <text x="386" y="58" font-family="IBM Plex Mono, monospace" font-size="11" fill="#D62B2B">03</text>
+                <text x="449.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#14181C">Predictive Models</text>
+                <text x="449.5" y="105" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#7C828A">Churn · reactiv. · LTV</text>
+
+                <!-- box 4 -->
+                <rect x="548" y="40" width="155" height="100" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="562" y="58" font-family="IBM Plex Mono, monospace" font-size="11" fill="#D62B2B">04</text>
+                <text x="625.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#14181C">Next-Best-Action</text>
+                <text x="625.5" y="105" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#7C828A">+ segment</text>
+
+                <!-- box 5 -->
+                <rect x="724" y="40" width="155" height="100" rx="4" fill="#14181C" stroke="#14181C" stroke-width="1.4"/>
+                <text x="738" y="58" font-family="IBM Plex Mono, monospace" font-size="11" fill="#D62B2B">05</text>
+                <text x="801.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF">Human Review</text>
+                <text x="801.5" y="105" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#9BA1A8">&amp; approval</text>
+
+                <!-- box 6 -->
+                <rect x="900" y="40" width="155" height="100" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="914" y="58" font-family="IBM Plex Mono, monospace" font-size="11" fill="#D62B2B">06</text>
+                <text x="977.5" y="86" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#14181C">Campaign Delivery</text>
+                <text x="977.5" y="105" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="#7C828A">+ outcome tracking</text>
+              </svg>
+            </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:12px;">Box 5 (Human Review &amp; Approval) is the non-negotiable gate described in Principle 01 — nothing reaches a user without a person signing off.</p>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="grid grid-2" style="align-items:start;">
+            <div>
+              <div class="block-head"><h2 class="h-lg">Campaign creation workflow</h2><span class="tag p2">Priya's view</span></div>
+              <div class="card" style="padding:8px 26px;">
+                <div class="step-row"><div class="step-num">01</div><div class="step-body"><h4>Define the objective</h4><p>"Reduce Waver-stage churn in Jeddah this month" — a goal, not a spreadsheet.</p></div></div>
+                <div class="step-row"><div class="step-num">02</div><div class="step-body"><h4>Review the AI-suggested brief</h4><p>The Predictive Intelligence Engine proposes a segment, an offer range, a channel mix, and timing.</p></div></div>
+                <div class="step-row"><div class="step-num">03</div><div class="step-body"><h4>Adjust and route for approval</h4><p>Ops edits as needed; Governance auto-checks budget, frequency caps, and market rules, then routes to the right approver by spend level.</p></div></div>
+                <div class="step-row"><div class="step-num">04</div><div class="step-body"><h4>Launch with a holdout</h4><p>A control group is carved out automatically — no extra step required to measure lift later.</p></div></div>
+                <div class="step-row"><div class="step-num">05</div><div class="step-body"><h4>Monitor live</h4><p>The Ops Dashboard tracks response in-flight and flags underperformance against the holdout.</p></div></div>
+                <div class="step-row"><div class="step-num">06</div><div class="step-body"><h4>Feed the loop</h4><p>Results flow into Insights &amp; Reporting and back into model retraining.</p></div></div>
+              </div>
+            </div>
+            <div>
+              <div class="block-head"><h2 class="h-lg">New market launch workflow</h2><span class="tag p2">e.g. Bahrain, Oman</span></div>
+              <div class="card" style="padding:8px 26px;">
+                <div class="step-row"><div class="step-num">01</div><div class="step-body"><h4>Connect the data</h4><p>Plug the new market's event stream into the existing User 360 schema — reuse the pipeline, don't rebuild it.</p></div></div>
+                <div class="step-row"><div class="step-num">02</div><div class="step-body"><h4>Cold-start with a proxy prior</h4><p>A brand-new market has no history — borrow model priors from the most behaviorally similar existing market rather than starting from zero.</p></div></div>
+                <div class="step-row"><div class="step-num">03</div><div class="step-body"><h4>Localize the guardrails</h4><p>Apply the market's data-handling rules, language, currency, and cultural calendar (Ramadan-aware scheduling, for example).</p></div></div>
+                <div class="step-row"><div class="step-num">04</div><div class="step-body"><h4>Soft-launch in observe-only mode</h4><p>The model scores users but nothing auto-triggers — validating signal quality before it touches spend.</p></div></div>
+                <div class="step-row"><div class="step-num">05</div><div class="step-body"><h4>Graduate to full operation</h4><p>Once enough local data accumulates (illustratively, 4–6 weeks), swap the borrowed prior for a locally-trained model and enable full orchestration.</p></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: DASHBOARD WIREFRAMES
+           ============================================================ -->
+      <section id="dashboards" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>04 · Product</div>
+            <h1 class="section-title">Dashboard Wireframes</h1>
+            <p class="section-dek">Three working mockups of what Ops actually opens every day — including a live, click-through segment builder.</p>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Retention Command Center</h2><span class="tag p2">Daily home screen</span></div>
+            <div class="mock-window">
+              <div class="mock-titlebar"><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-titlebar-label">pulse.keeta.internal/command-center</div></div>
+              <div class="mock-body">
+                <div class="mock-toolbar">
+                  <span class="mock-pill active">All Markets</span>
+                  <span class="mock-pill">Hong Kong</span>
+                  <span class="mock-pill">Saudi Arabia</span>
+                  <span class="mock-pill">UAE</span>
+                  <span class="mock-pill">Qatar</span>
+                  <span class="mock-pill">Kuwait</span>
+                  <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);">Updated 6 min ago</span>
+                </div>
+                <div class="grid grid-4" style="margin-bottom:18px;">
+                  <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-target"/></svg></div><div class="kpi-delta up">▲ 1.2pt</div></div><div class="kpi-value">71.4%</div><div class="kpi-label">D90 retention (rolling)</div></div>
+                  <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-alert"/></svg></div><div class="kpi-delta warn">▲ 340</div></div><div class="kpi-value">56.5K</div><div class="kpi-label">Users flagged "at-risk" today</div></div>
+                  <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-route"/></svg></div><div class="kpi-delta up">▲ 3.1pt</div></div><div class="kpi-value">22.8%</div><div class="kpi-label">Reactivation rate (7d)</div></div>
+                  <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon"><svg class="icon"><use href="#i-workflow"/></svg></div><div class="kpi-delta up">▲ 4</div></div><div class="kpi-value">17</div><div class="kpi-label">Active campaigns</div></div>
+                </div>
+                <div class="grid grid-2" style="gap:16px;">
+                  <div class="card">
+                    <div class="block-label">At-risk users by market</div>
+                    <div class="barchart">
+                      <div class="bar-col"><div class="bar-val">18.4K</div><div class="bar" style="height:66%;"></div><div class="bar-lbl">HK</div></div>
+                      <div class="bar-col"><div class="bar-val">27.9K</div><div class="bar accent" style="height:100%;"></div><div class="bar-lbl">KSA</div></div>
+                      <div class="bar-col"><div class="bar-val">6.1K</div><div class="bar" style="height:22%;"></div><div class="bar-lbl">UAE</div></div>
+                      <div class="bar-col"><div class="bar-val">2.3K</div><div class="bar" style="height:8%;"></div><div class="bar-lbl">QA</div></div>
+                      <div class="bar-col"><div class="bar-val">1.8K</div><div class="bar" style="height:6%;"></div><div class="bar-lbl">KW</div></div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="block-label">Priority watchlist — top by predicted LTV at risk</div>
+                    <table style="font-size:12px;">
+                      <thead><tr><th>User</th><th>Market</th><th>Risk</th><th>Action</th></tr></thead>
+                      <tbody>
+                        <tr><td class="mono">U-88213</td><td>Hong Kong</td><td><span class="tag p0">92 High</span></td><td>Loyalty nudge</td></tr>
+                        <tr><td class="mono">U-40217</td><td>Saudi Arabia</td><td><span class="tag p0">89 High</span></td><td>Small offer</td></tr>
+                        <tr><td class="mono">U-19045</td><td>UAE</td><td><span class="tag p0">84 High</span></td><td>In-app nudge</td></tr>
+                        <tr><td class="mono">U-63310</td><td>Hong Kong</td><td><span class="tag p1">78 Med</span></td><td>Monitor</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Segment Builder</h2><span class="tag positive">Live demo — try it</span></div>
+            <p style="font-size:13px;max-width:700px;">Change any filter below — the estimate recalculates instantly against illustrative pool sizes, the same interaction pattern Ops would use to scope a real campaign audience.</p>
+            <div class="mock-window">
+              <div class="mock-titlebar"><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-titlebar-label">pulse.keeta.internal/segments/new</div></div>
+              <div class="segbuilder">
+                <div class="segbuilder-controls">
+                  <div class="segfield">
+                    <label>Market</label>
+                    <select id="segMarket">
+                      <option value="all" selected>All Markets</option>
+                      <option value="hk">Hong Kong</option>
+                      <option value="ksa">Saudi Arabia</option>
+                      <option value="uae">UAE</option>
+                      <option value="qa">Qatar</option>
+                      <option value="kw">Kuwait</option>
+                    </select>
+                  </div>
+                  <div class="segfield">
+                    <label>Risk Tier</label>
+                    <select id="segRisk">
+                      <option value="any" selected>Any</option>
+                      <option value="high">High risk (Waver+)</option>
+                      <option value="med">Medium risk</option>
+                      <option value="low">Low risk</option>
+                    </select>
+                  </div>
+                  <div class="segfield">
+                    <label>Recency</label>
+                    <select id="segRecency">
+                      <option value="any" selected>Any</option>
+                      <option value="d0_7">0–7 days quiet</option>
+                      <option value="d8_21">8–21 days quiet</option>
+                      <option value="d22_45">22–45 days quiet</option>
+                    </select>
+                  </div>
+                  <div class="segfield">
+                    <label>Predicted LTV Tier</label>
+                    <select id="segLtv">
+                      <option value="any" selected>Any</option>
+                      <option value="top20">Top 20%</option>
+                      <option value="mid">Mid-tier</option>
+                      <option value="entry">Entry-tier</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="segbuilder-result">
+                  <div>
+                    <div class="segresult-value" id="segResultValue">1,450,000</div>
+                    <div class="segresult-label" id="segResultLabel">users match this segment · illustrative pool</div>
+                  </div>
+                  <div class="segresult-actions">
+                    <button class="btn ghost" style="border:1px solid #333A41;color:#fff;" type="button">Save segment</button>
+                    <button class="btn accent" type="button">Create campaign from segment</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Campaign Performance — live experiment</h2><span class="tag p2">In-flight view</span></div>
+            <div class="mock-window">
+              <div class="mock-titlebar"><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-titlebar-label">pulse.keeta.internal/campaigns/jeddah-winback-042</div></div>
+              <div class="mock-body">
+                <div class="mock-toolbar">
+                  <span class="mock-pill active" style="background:var(--positive);border-color:var(--positive);">● Live — Day 4 of 7</span>
+                  <span class="mock-pill">Jeddah · Waver-stage win-back</span>
+                  <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);">Holdout: 15% of segment</span>
+                </div>
+                <div class="grid grid-4" style="margin-bottom:18px;">
+                  <div class="kpi-card"><div class="kpi-label">Treatment reactivation</div><div class="kpi-value" style="font-size:24px;">3.6%</div></div>
+                  <div class="kpi-card"><div class="kpi-label">Holdout reactivation</div><div class="kpi-value" style="font-size:24px;color:var(--ink-faint);">2.6%</div></div>
+                  <div class="kpi-card"><div class="kpi-label">Incremental lift</div><div class="kpi-value" style="font-size:24px;color:var(--positive);">+38%</div></div>
+                  <div class="kpi-card"><div class="kpi-label">Significance</div><div class="kpi-value" style="font-size:24px;">Day 4</div></div>
+                </div>
+                <div class="card">
+                  <div class="block-label">Cumulative reactivation — treatment vs. holdout</div>
+                  <svg viewBox="0 0 600 190" style="width:100%;height:auto;">
+                    <line x1="20" y1="160" x2="580" y2="160" stroke="#E2E0DB" stroke-width="1"/>
+                    <line x1="20" y1="90" x2="580" y2="90" stroke="#EDEBE6" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="20" y1="20" x2="580" y2="20" stroke="#EDEBE6" stroke-width="1" stroke-dasharray="3,3"/>
+                    <line x1="340" y1="20" x2="340" y2="160" stroke="#B4740E" stroke-width="1" stroke-dasharray="4,3"/>
+                    <text x="344" y="30" font-family="IBM Plex Mono, monospace" font-size="10" fill="#B4740E">sig. reached</text>
+                    <polyline points="20,160 100,138.2 180,119.6 260,107.1 340,97.8 420,91.6 500,85.3 580,79.1" fill="none" stroke="#7C828A" stroke-width="1.8" stroke-dasharray="5,4"/>
+                    <polyline points="20,160 100,132 180,107.1 260,88.4 340,72.9 420,63.6 500,54.2 580,48" fill="none" stroke="#D62B2B" stroke-width="2.2"/>
+                    <circle cx="580" cy="48" r="3.5" fill="#D62B2B"/>
+                    <circle cx="580" cy="79.1" r="3.5" fill="#7C828A"/>
+                    <text x="20" y="176" font-family="IBM Plex Mono, monospace" font-size="10" fill="#7C828A">Day 0</text>
+                    <text x="560" y="176" font-family="IBM Plex Mono, monospace" font-size="10" fill="#7C828A">Day 7</text>
+                  </svg>
+                  <div style="display:flex;gap:20px;margin-top:8px;">
+                    <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);"><span style="width:14px;height:2px;background:var(--accent);display:inline-block;"></span>Treatment</div>
+                    <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);"><span style="width:14px;height:2px;background:var(--ink-faint);display:inline-block;border-top:2px dashed var(--ink-faint);"></span>Holdout (control)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: AI/ML OPPORTUNITIES
+           ============================================================ -->
+      <section id="ai-opportunities" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>05 · Intelligence &amp; Tech</div>
+            <h1 class="section-title">AI/ML Opportunities</h1>
+            <p class="section-dek">Six models that turn behavioral data into a decision, and a conversational layer on top of all of them.</p>
+          </div>
+
+          <div class="callout note" style="margin-bottom:48px;">
+            <svg class="icon"><use href="#i-info"/></svg>
+            <div><p style="margin-bottom:0;"><strong>Building on, not duplicating, existing Meituan Group AI infrastructure.</strong> Meituan already runs real-time ML dispatch at city scale (its "Meituan Brain" logistics system), large-scale recommendation/intent systems, an open-sourced 1.6-trillion-parameter model family (LongCat-2.0), and an agentic in-app assistant (Xiaotuan) elevated to the homepage in April 2026. None of this is currently pointed at user retention specifically. PULSE's premise is to extend that existing muscle into a new use case rather than building a parallel AI stack from zero.</p></div>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">The model layer</h2></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:19%;">Model</th><th style="width:24%;">Predicts</th><th style="width:32%;">Key input signals</th><th>Decision it enables</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="strong">Churn Prediction</td>
+                    <td>Probability a user enters "Waver" or "Go Quiet" in the next 10–20 days</td>
+                    <td>Order-frequency trend (2-wk vs. 6-wk rolling avg), browse-without-order events, complaint history, coupon-dependency ratio</td>
+                    <td>Trigger the right nudge before dormancy, not after</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Reactivation Propensity</td>
+                    <td>Likelihood a dormant user returns, given a specific incentive</td>
+                    <td>Past response to offers, dormancy length, cuisine/category affinity, LTV tier</td>
+                    <td>Separate "will return anyway" from "needs a nudge" from "not worth the spend"</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Predicted LTV</td>
+                    <td>Forward-looking value of a user over a rolling window</td>
+                    <td>Order value trend, frequency, tenure, market-adjusted basket size</td>
+                    <td>Size the incentive to the user, not a flat blanket discount</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Sentiment &amp; Feedback NLP</td>
+                    <td>Recurring friction themes from support tickets and reviews</td>
+                    <td>Support transcripts, in-app ratings, review text — English, Arabic, Chinese/Cantonese</td>
+                    <td>Surface "why are we losing people in this city," not just "who"</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Anomaly Detection</td>
+                    <td>Real-time deviation from expected retention patterns per city</td>
+                    <td>Rolling city-level churn/order baselines, service-time deltas</td>
+                    <td>Same-day alert on a churn spike, instead of discovery at month-end</td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Incentive / Elasticity Modeling</td>
+                    <td>How retention probability changes with offer size, per segment</td>
+                    <td>Historical offer-response curves by segment and market</td>
+                    <td>Find the minimum effective offer — directly targets Problem #3</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head">
+              <h2 class="h-lg">PULSE Copilot — try the concept</h2>
+              <span class="tag positive">Interactive · pre-scripted demo</span>
+            </div>
+            <p style="font-size:13.5px;max-width:740px;">A natural-language layer over the models above, so Priya can ask a question instead of building a query. Click a sample prompt below — these four responses are hand-written to illustrate the intended behavior; nothing here calls a live model.</p>
+
+            <div class="copilot">
+              <div class="copilot-head"><span class="dot-live"></span><span>PULSE COPILOT — CONCEPT DEMO</span></div>
+              <div class="copilot-body">
+                <div class="copilot-chips">
+                  <button class="copilot-chip" type="button" data-key="riyadh">Show me users in Riyadh with declining order frequency</button>
+                  <button class="copilot-chip" type="button" data-key="hkwinback">Draft a win-back offer for lapsed high-LTV users in Hong Kong</button>
+                  <button class="copilot-chip" type="button" data-key="priority">Which cohort should we prioritize this week?</button>
+                  <button class="copilot-chip" type="button" data-key="kuwait">Explain the drop in Kuwait D30 retention</button>
+                </div>
+                <div class="copilot-query" id="copilotQuery" style="min-height:18px;"></div>
+                <div class="typing" id="copilotTyping" style="display:none;margin-bottom:10px;"><span></span><span></span><span></span></div>
+                <div class="copilot-response" id="copilotResponse">
+                  <div class="r-title" id="copilotRTitle"></div>
+                  <p id="copilotRBody"></p>
+                  <p id="copilotRNote" style="color:#6ED3A8;"></p>
+                  <div class="copilot-response-meta" id="copilotRMeta"></div>
+                </div>
+                <p id="copilotEmpty" style="color:#565C64;font-size:13px;margin:0;">↑ Choose a sample query to see PULSE Copilot respond.</p>
+              </div>
+              <div class="copilot-foot">Concept demo — illustrative, scripted responses. Not a live model call.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: TECHNICAL ARCHITECTURE
+           ============================================================ -->
+      <section id="architecture" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>05 · Intelligence &amp; Tech</div>
+            <h1 class="section-title">Technical Architecture</h1>
+            <p class="section-dek">A reference architecture, not a claim about what Keeta actually runs today.</p>
+          </div>
+
+          <div class="callout disclaimer" style="margin-bottom:40px;">
+            <svg class="icon"><use href="#i-flag"/></svg>
+            <div><p style="margin-bottom:0;">This diagram reflects <strong>general industry-standard patterns</strong> for a system of this kind — the same six-layer shape you'd find in public engineering write-ups from most consumer platforms at this scale. It is <strong>not</strong> a description of Keeta's or Meituan's actual internal infrastructure, which the author has no visibility into.</p></div>
+          </div>
+
+          <div class="block">
+            <div class="diagram-frame">
+              <svg viewBox="0 0 940 600" xmlns="http://www.w3.org/2000/svg">
+
+                <!-- row labels -->
+                <text x="20" y="24" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#7C828A" style="letter-spacing:1.5px;">DATA SOURCES</text>
+                <text x="20" y="120" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#7C828A" style="letter-spacing:1.5px;">INGESTION &amp; FEATURE STORE</text>
+                <text x="20" y="216" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#7C828A" style="letter-spacing:1.5px;">ML PLATFORM</text>
+                <text x="20" y="312" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#7C828A" style="letter-spacing:1.5px;">SERVING</text>
+                <text x="20" y="382" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#7C828A" style="letter-spacing:1.5px;">APPLICATION LAYER</text>
+                <text x="20" y="478" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#7C828A" style="letter-spacing:1.5px;">CHANNELS</text>
+
+                <!-- gap arrows G1: row1 -> row2 -->
+                <line x1="150" y1="96" x2="150" y2="128" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="460" y1="96" x2="460" y2="128" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="770" y1="96" x2="770" y2="128" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <!-- gap arrows G2: row2 -> row3 -->
+                <line x1="150" y1="192" x2="150" y2="224" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="460" y1="192" x2="460" y2="224" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="770" y1="192" x2="770" y2="224" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <!-- gap arrow G3: row3 -> row4a -->
+                <line x1="440" y1="288" x2="440" y2="320" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <!-- gap arrows G4: row4a -> row4b -->
+                <line x1="150" y1="368" x2="150" y2="390" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="460" y1="368" x2="460" y2="390" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="770" y1="368" x2="770" y2="390" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <!-- gap arrows G5: row4b -> row5, with approval-gate note -->
+                <line x1="150" y1="454" x2="150" y2="486" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="460" y1="454" x2="460" y2="486" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <line x1="770" y1="454" x2="770" y2="486" stroke="#14181C" stroke-width="1.6" marker-end="url(#arrowhead)"/>
+                <text x="490" y="474" font-family="IBM Plex Mono, monospace" font-size="10" fill="#B4740E">⊙ human approval gate</text>
+
+                <!-- feedback loop -->
+                <path d="M 120,540 L 120,568 L 8,568 L 8,65 L 20,65" fill="none" stroke="#D62B2B" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#arrowhead-red)"/>
+
+                <!-- ROW 1: Data Sources -->
+                <rect x="20" y="34" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="120.5" y="60" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">App &amp; Web Events</text>
+                <text x="120.5" y="78" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">clickstream, sessions</text>
+
+                <rect x="233" y="34" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="333.5" y="60" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Orders &amp; Delivery</text>
+                <text x="333.5" y="78" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">order, courier, ETA data</text>
+
+                <rect x="446" y="34" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="546.5" y="60" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Support &amp; Reviews</text>
+                <text x="546.5" y="78" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">tickets, ratings, text</text>
+
+                <rect x="659" y="34" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="759.5" y="60" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Pricing &amp; Promo Signals</text>
+                <text x="759.5" y="78" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">coupon &amp; discount usage</text>
+
+                <!-- ROW 2: Ingestion & Feature Store -->
+                <rect x="20" y="130" width="269" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="154.5" y="156" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Event Streaming</text>
+                <text x="154.5" y="174" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">real-time ingestion layer</text>
+
+                <rect x="305" y="130" width="269" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="439.5" y="156" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Data Lake / Warehouse</text>
+                <text x="439.5" y="174" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">raw + curated storage</text>
+
+                <rect x="590" y="130" width="269" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="724.5" y="156" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">User 360 Feature Store</text>
+                <text x="724.5" y="174" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">the platform's core asset</text>
+
+                <!-- ROW 3: ML Platform -->
+                <rect x="20" y="226" width="412" height="62" rx="4" fill="#FBEAEA" stroke="#D62B2B" stroke-width="1.6"/>
+                <text x="226" y="252" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Model Training Pipelines</text>
+                <text x="226" y="270" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">churn · reactivation · LTV · elasticity</text>
+
+                <rect x="448" y="226" width="412" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="654" y="252" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Model Registry &amp; Experiment Tracking</text>
+                <text x="654" y="270" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">versioning, A/B assignment, rollback</text>
+
+                <!-- ROW 4a: Serving -->
+                <rect x="20" y="322" width="840" height="46" rx="4" fill="#FBEAEA" stroke="#D62B2B" stroke-width="1.6"/>
+                <text x="440" y="344" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="13" font-weight="600" fill="#14181C">Real-Time Scoring &amp; Decision API</text>
+                <text x="440" y="360" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">sub-second inference at request time</text>
+
+                <!-- ROW 4b: Application Layer -->
+                <rect x="20" y="392" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="120.5" y="418" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Ops Dashboards</text>
+                <text x="120.5" y="436" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">command center, watchlists</text>
+
+                <rect x="233" y="392" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="333.5" y="418" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Segment Builder</text>
+                <text x="333.5" y="436" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">audience definition</text>
+
+                <rect x="446" y="392" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="546.5" y="418" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Campaign Orchestration</text>
+                <text x="546.5" y="436" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">approval + scheduling</text>
+
+                <rect x="659" y="392" width="201" height="62" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="759.5" y="418" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">PULSE Copilot (LLM)</text>
+                <text x="759.5" y="436" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">conversational layer</text>
+
+                <!-- ROW 5: Channels -->
+                <rect x="20" y="488" width="201" height="52" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="120.5" y="512" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Push</text>
+                <text x="120.5" y="528" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">in-app + mobile</text>
+
+                <rect x="233" y="488" width="201" height="52" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="333.5" y="512" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">Email</text>
+                <text x="333.5" y="528" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">lifecycle sequences</text>
+
+                <rect x="446" y="488" width="201" height="52" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="546.5" y="512" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">SMS</text>
+                <text x="546.5" y="528" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">high-urgency only</text>
+
+                <rect x="659" y="488" width="201" height="52" rx="4" fill="#FFFFFF" stroke="#E2E0DB" stroke-width="1.4"/>
+                <text x="759.5" y="512" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#14181C">In-App Message</text>
+                <text x="759.5" y="528" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="#7C828A">contextual, in-session</text>
+
+              </svg>
+            </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:12px;">Dashed red path: delivery, redemption, and campaign outcomes flow back into the Feature Store, retraining models weekly — the same closed loop shown in the Core Workflow diagram earlier.</p>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Where this could extend existing Meituan Group infrastructure</h2></div>
+            <p style="font-size:13.5px;max-width:760px;margin-bottom:20px;">This is a reasonable technical assumption based on public information about Meituan's stack, not an assertion about what's actually wired up internally.</p>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Layer above</th><th style="width:37%;">Plausible existing asset to extend</th><th>Why it's a sensible assumption</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">PULSE Copilot (LLM)</td><td>LongCat-2.0, Meituan's own open-sourced model family</td><td>Already built, already at scale, already deployed for Xiaotuan's agentic tasks — retention Q&amp;A is a narrower version of the same job</td></tr>
+                  <tr><td class="strong">Real-Time Scoring API</td><td>Serving patterns from the "Meituan Brain" dispatch system</td><td>That system already reassigns couriers roughly every 30 seconds at city scale — the low-latency serving muscle needed here already exists elsewhere in the company</td></tr>
+                  <tr><td class="strong">Data Lake / Feature Store</td><td>Meituan's existing data platform</td><td>A company operating at Meituan's order volume necessarily already has warehouse-scale infrastructure; the new work is the User 360 schema on top of it, not the storage layer itself</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: KPIS & METRICS
+           ============================================================ -->
+      <section id="kpis" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>06 · Measuring Success</div>
+            <h1 class="section-title">KPIs &amp; Metrics</h1>
+            <p class="section-dek">One number everything else ladders up to, and the fifteen metrics that explain whether it's moving for a good reason.</p>
+          </div>
+
+          <div class="block">
+            <div class="card" style="padding:32px 36px;border-left:3px solid var(--accent);">
+              <div class="block-label" style="margin-bottom:10px;">North Star Metric</div>
+              <h2 style="font-family:var(--font-display);font-size:26px;margin-bottom:10px;">D90 Retained-User Rate</h2>
+              <p style="font-size:14px;max-width:680px;margin-bottom:18px;">The share of users still placing orders 90 days after acquisition. Chosen over shorter windows because D90 is far enough out to reflect a genuine habit rather than a one-time promo response — and it's the metric every downstream KPI in this section ultimately exists to move.</p>
+              <div style="display:flex;gap:40px;flex-wrap:wrap;">
+                <div><div class="mono" style="font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Illustrative baseline</div><div style="font-family:var(--font-display);font-size:28px;font-weight:600;">~65%</div></div>
+                <div><div class="mono" style="font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Illustrative target, Month 12</div><div style="font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--positive);">~71%</div></div>
+                <div><div class="mono" style="font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Reviewed</div><div style="font-family:var(--font-display);font-size:28px;font-weight:600;">Weekly</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">Retention &amp; Engagement</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Metric</th><th style="width:42%;">Definition</th><th style="width:14%;">Cadence</th><th>Owner</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">D30 / D60 Retention</td><td>% of cohort still active at day 30 / day 60</td><td>Weekly</td><td>Regional UserOps</td></tr>
+                  <tr><td class="strong">Reactivation Rate (7d / 30d)</td><td>% of contacted dormant users who order again within window</td><td>Weekly</td><td>Growth Analytics</td></tr>
+                  <tr><td class="strong">Churn Rate</td><td>% of active users who go fully dormant in a rolling 45-day window</td><td>Weekly</td><td>Regional UserOps</td></tr>
+                  <tr><td class="strong">Waver-to-Active Recovery Rate</td><td>% of users flagged at the Waver stage who return to healthy ordering cadence before going quiet</td><td>Weekly</td><td>Regional UserOps</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">Commercial &amp; Efficiency</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Metric</th><th style="width:42%;">Definition</th><th style="width:14%;">Cadence</th><th>Owner</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Cost per Retained User</td><td>Total intervention spend ÷ incremental users retained above holdout</td><td>Monthly</td><td>Finance + Growth</td></tr>
+                  <tr><td class="strong">Campaign ROI / ROAS</td><td>Incremental GMV generated ÷ campaign spend</td><td>Monthly</td><td>Growth Analytics</td></tr>
+                  <tr><td class="strong">Incremental GMV</td><td>GMV attributable to retention campaigns, above the holdout baseline</td><td>Monthly</td><td>Finance</td></tr>
+                  <tr><td class="strong">Discount Dependency Ratio</td><td>% of retained-user GMV that required an active discount to occur</td><td>Monthly</td><td>Growth Analytics</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">AI / Model Health</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Metric</th><th style="width:42%;">Definition</th><th style="width:14%;">Cadence</th><th>Owner</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Model Precision @ Top-Decile Risk</td><td>Of users flagged highest-risk, % who would genuinely have churned without intervention</td><td>Bi-weekly</td><td>Data Science</td></tr>
+                  <tr><td class="strong">Model Recall</td><td>% of actual churners the model successfully flagged in advance</td><td>Bi-weekly</td><td>Data Science</td></tr>
+                  <tr><td class="strong">AI-Assisted Lift vs. Holdout</td><td>The core experimentation read — reactivation/retention delta between AI-targeted treatment and control</td><td>Per-campaign</td><td>Growth Analytics</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">Operational Velocity</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Metric</th><th style="width:42%;">Definition</th><th style="width:14%;">Cadence</th><th>Owner</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Time to Launch a Campaign</td><td>Elapsed time from stated objective to live campaign</td><td>Monthly</td><td>UserOps Manager</td></tr>
+                  <tr><td class="strong">% Campaigns Using AI-Suggested Brief</td><td>Adoption metric for the Predictive Intelligence Engine's recommendations</td><td>Monthly</td><td>Head of UserOps Intl</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">Customer Experience — guardrails</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:26%;">Metric</th><th style="width:42%;">Definition</th><th style="width:14%;">Cadence</th><th>Owner</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">NPS / CSAT Trend, Post-Intervention</td><td>Sampled after a user receives a win-back or retention contact</td><td>Monthly</td><td>CX + UserOps</td></tr>
+                  <tr><td class="strong">Message Fatigue Rate</td><td>% of users who mute or opt out after 2+ AI-triggered messages within 30 days</td><td>Monthly</td><td>Growth Analytics</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:10px;">The last two rows are guardrail metrics, not growth metrics — they exist to catch PULSE succeeding on retention while quietly degrading trust. Both should be reviewed alongside the North Star, never in isolation.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: EXPERIMENTATION FRAMEWORK
+           ============================================================ -->
+      <section id="experimentation" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>06 · Measuring Success</div>
+            <h1 class="section-title">Experimentation Framework</h1>
+            <p class="section-dek">How PULSE tells the difference between a campaign that worked and a campaign that merely coincided with a good week.</p>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Design principles</h2></div>
+            <div class="grid grid-2">
+              <div class="feature-card"><h3>Holdout by default</h3><p>Every campaign automatically carves out a control group. There's no such thing as a PULSE campaign without a comparison point — this is enforced by the platform, not left to individual judgment.</p></div>
+              <div class="feature-card"><h3>Incrementality over correlation</h3><p>The question is never "did retention go up" — it's "did it go up more than it would have anyway." Before/after comparisons alone are explicitly disallowed as a basis for claiming success.</p></div>
+              <div class="feature-card"><h3>Pre-registered primary metric</h3><p>The metric that decides success is locked in before launch, closing off the temptation to scan a dozen numbers after the fact until one looks favorable.</p></div>
+              <div class="feature-card"><h3>Guardrails run continuously</h3><p>Message fatigue and CSAT are monitored throughout the test window, not just checked at the end — a campaign can be halted early for hurting trust even while winning on the primary metric.</p></div>
+            </div>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">The experiment lifecycle</h2></div>
+            <div class="card" style="padding:8px 26px;">
+              <div class="step-row"><div class="step-num">01</div><div class="step-body"><h4>Design</h4><p>Define the hypothesis, the primary metric, and the minimum detectable effect (MDE) before writing a single line of campaign copy.</p></div></div>
+              <div class="step-row"><div class="step-num">02</div><div class="step-body"><h4>Power calculation</h4><p>Determine the required sample size and holdout percentage, given the market's traffic volume and the MDE from step one.</p></div></div>
+              <div class="step-row"><div class="step-num">03</div><div class="step-body"><h4>Launch with holdout</h4><p>Treatment and control are assigned simultaneously; control receives no PULSE-triggered contact for the campaign's duration.</p></div></div>
+              <div class="step-row"><div class="step-num">04</div><div class="step-body"><h4>Monitor guardrails</h4><p>Fatigue and CSAT are tracked daily throughout the run, not only at readout.</p></div></div>
+              <div class="step-row"><div class="step-num">05</div><div class="step-body"><h4>Read out significance</h4><p>The primary metric is compared at the pre-registered threshold — no stopping early just because an interim look happens to be favorable.</p></div></div>
+              <div class="step-row"><div class="step-num">06</div><div class="step-body"><h4>Decide</h4><p>Scale, iterate, or kill — using the decision rule set in step one, not a fresh judgment call made after seeing the result.</p></div></div>
+              <div class="step-row"><div class="step-num">07</div><div class="step-body"><h4>Feed the loop</h4><p>Winning and losing variants alike become training signal for the next weekly model refresh.</p></div></div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Significance thresholds — right-sized by market</h2></div>
+            <p style="font-size:13px;max-width:720px;margin-bottom:16px;">A blanket 95%-confidence rule sounds rigorous, but on a market with limited daily volume it can mean waiting months for any readout at all. PULSE makes that tradeoff explicit and deliberate, rather than applying one rule everywhere and quietly starving small markets of learning.</p>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Market tier</th><th>Example markets</th><th>Confidence threshold</th><th>Typical MDE</th><th>Typical duration</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Tier 1 — high volume</td><td>Saudi Arabia, Hong Kong</td><td>95%</td><td>2–3 pts absolute</td><td>7–14 days</td></tr>
+                  <tr><td class="strong">Tier 2 — medium volume</td><td>UAE</td><td>95%</td><td>4–5 pts absolute</td><td>14–21 days</td></tr>
+                  <tr><td class="strong">Tier 3 — early / small</td><td>Qatar, Kuwait, Bahrain, Oman</td><td>90%†</td><td>6–8 pts absolute</td><td>21–30 days, or directional-only</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:12px;color:var(--ink-faint);margin-top:10px;">† Tier 3 knowingly trades some statistical rigor for the ability to learn anything at all in a low-volume market — a conscious tradeoff, reviewed as markets mature past early-stage volume.</p>
+          </div>
+
+          <div class="callout note">
+            <svg class="icon"><use href="#i-route"/></svg>
+            <div><p style="margin-bottom:0;">New-market rollouts follow observe-only mode before any experiment touches spend — see the <a href="#" onclick="PULSE.showSection('workflows');return false;">New Market Launch Workflow</a> for the full sequence.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: IMPLEMENTATION ROADMAP
+           ============================================================ -->
+      <section id="roadmap" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>07 · Execution</div>
+            <h1 class="section-title">Implementation Roadmap</h1>
+            <p class="section-dek">Four phases, each earning the right to the next by hitting a concrete exit bar — not a fixed calendar promise.</p>
+          </div>
+
+          <div class="roadmap">
+            <div class="roadmap-track"></div>
+
+            <div class="roadmap-phase">
+              <div class="roadmap-marker">P0</div>
+              <div class="roadmap-phase-head"><h4>Discovery &amp; Foundation</h4><span class="roadmap-window">Month 0–3</span></div>
+              <p style="font-size:13.5px;margin-bottom:10px;">No user-facing feature yet — this phase is about making every later phase possible.</p>
+              <p style="font-size:13px;color:var(--ink-soft);margin-bottom:6px;"><strong>Key workstreams:</strong> unify behavioral data into a single User 360 schema; stand up event streaming and the feature store; establish per-market governance rules (Saudi PDPL, Hong Kong PDPO, UAE PDPL); instrument the KPI baseline; align Ops, Data Science, and Legal on the North Star metric.</p>
+              <p style="font-size:13px;color:var(--ink-soft);"><strong>Exit criteria:</strong> a single User 360 record exists for every active user in at least two pilot markets; baseline D90 retention is measured and agreed as the starting point.</p>
+            </div>
+
+            <div class="roadmap-phase">
+              <div class="roadmap-marker">P1</div>
+              <div class="roadmap-phase-head"><h4>MVP</h4><span class="roadmap-window">Month 3–6</span><span class="tag p0">P0 features</span></div>
+              <p style="font-size:13.5px;margin-bottom:10px;">The first version Ops can actually open every morning.</p>
+              <p style="font-size:13px;color:var(--ink-soft);margin-bottom:6px;"><strong>Key workstreams:</strong> ship the Predictive Intelligence Engine's churn model (v1); launch the Retention Command Center dashboard; basic Smart Segmentation with manual filters; governance guardrails enforced end-to-end.</p>
+              <p style="font-size:13px;color:var(--ink-soft);"><strong>Exit criteria:</strong> Ops in pilot markets can see a daily-updated at-risk list and manually build a segment from it; the first holdout-based campaign launches successfully.</p>
+            </div>
+
+            <div class="roadmap-phase">
+              <div class="roadmap-marker">P2</div>
+              <div class="roadmap-phase-head"><h4>Orchestration</h4><span class="roadmap-window">Month 6–9</span><span class="tag p1">P1 features</span></div>
+              <p style="font-size:13.5px;margin-bottom:10px;">From "PULSE tells you who" to "PULSE helps you act."</p>
+              <p style="font-size:13px;color:var(--ink-soft);margin-bottom:6px;"><strong>Key workstreams:</strong> Campaign Orchestration &amp; Personalization; a formal Experimentation &amp; Optimization Hub replacing manual spreadsheet tracking; the Insights &amp; Reporting Layer; rollout expands from 2 pilot markets to all live markets (adding UAE, Qatar, Kuwait).</p>
+              <p style="font-size:13px;color:var(--ink-soft);"><strong>Exit criteria:</strong> most retention campaigns across all live markets run through PULSE rather than ad hoc tools; AI-assisted lift is measured consistently via the Experimentation Framework.</p>
+            </div>
+
+            <div class="roadmap-phase is-now">
+              <div class="roadmap-marker">P3</div>
+              <div class="roadmap-phase-head"><h4>Intelligence at Scale</h4><span class="roadmap-window">Month 9–12+</span><span class="tag p2">P2 features</span></div>
+              <p style="font-size:13.5px;margin-bottom:10px;">The forward-looking phase — furthest out, least certain, most ambitious.</p>
+              <p style="font-size:13px;color:var(--ink-soft);margin-bottom:6px;"><strong>Key workstreams:</strong> PULSE Copilot moves from concept demo to a real natural-language interface; advanced incentive/elasticity optimization; extend to new-market launches (Bahrain, Oman) using the cold-start workflow already defined; begin exploring the directions in Future Enhancements.</p>
+              <p style="font-size:13px;color:var(--ink-soft);"><strong>Exit criteria:</strong> the North Star metric shows sustained, holdout-attributable improvement; PULSE is the default UserOps tool across all markets, not a parallel option.</p>
+            </div>
+          </div>
+
+          <p style="font-size:12px;color:var(--ink-faint);margin-top:8px;">Feature tags reference the priority tiers defined in <a href="#" onclick="PULSE.showSection('features');return false;">Feature Specifications</a>.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: RISKS & MITIGATIONS
+           ============================================================ -->
+      <section id="risks" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>07 · Execution</div>
+            <h1 class="section-title">Risks &amp; Mitigations</h1>
+            <p class="section-dek">Nine ways this could go wrong, and what's built in specifically to catch each one.</p>
+          </div>
+
+          <div class="grid grid-3">
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Data Privacy &amp; Regulatory Compliance</span><span class="sev high">High</span></div>
+              <p>PULSE aggregates data across markets with meaningfully different regimes — Saudi Arabia's PDPL, Hong Kong's PDPO, and the UAE's PDPL each govern cross-border movement and consent differently.</p>
+              <div class="risk-mitig"><b>Mitigation</b>Data residency rules are enforced at the architecture level, not bolted on later; legal review is a required gate in the New Market Launch Workflow before any market goes live.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Model Bias &amp; Fairness</span><span class="sev med">Medium</span></div>
+              <p>A model trained mostly on mature-market data (Hong Kong, Saudi Arabia) risks mis-scoring users in newer, thinner-data markets like Qatar or Kuwait if applied naively.</p>
+              <div class="risk-mitig"><b>Mitigation</b>Per-market calibration is required before a market exits observe-only mode; precision and recall are monitored per-market, not only in aggregate.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Discount Over-Reliance</span><span class="sev high">High</span></div>
+              <p>The path of least resistance for any retention system is "give everyone a bigger discount" — which would directly worsen the unit-economics problem PULSE exists to solve.</p>
+              <div class="risk-mitig"><b>Mitigation</b>Discount Dependency Ratio is a named KPI; the Incentive/Elasticity model's whole purpose is the minimum effective offer; Governance caps apply platform-wide.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Change Management &amp; Ops Adoption</span><span class="sev med">Medium</span></div>
+              <p>A tool Ops doesn't trust gets quietly worked around, no matter how good the underlying model is — a common failure mode for internal analytics platforms.</p>
+              <div class="risk-mitig"><b>Mitigation</b>MVP keeps segmentation manual so trust builds incrementally; AI suggests, a person always edits and approves — control isn't handed over on day one.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Cross-Market Data Localization</span><span class="sev med">Medium</span></div>
+              <p>Some markets may eventually require in-country data storage and processing, complicating a single unified User 360 architecture.</p>
+              <div class="risk-mitig"><b>Mitigation</b>The Data Lake / Warehouse layer is designed for regional partitioning from the outset — a Phase 0 decision, not a later retrofit.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">GenAI Copilot Errors</span><span class="sev high">High</span></div>
+              <p>A natural-language layer that misreads a query or states a wrong number plausibly is a real risk once Copilot moves past the concept-demo stage.</p>
+              <div class="risk-mitig"><b>Mitigation</b>Copilot launches strictly as a read/draft assistant; anything that spends money or contacts a user still routes through Human Review &amp; Approval.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Algorithmic Fatigue</span><span class="sev med">Medium</span></div>
+              <p>The better PULSE gets at finding the right moment to reach a user, the more tempting it becomes to reach them constantly — risking opt-outs that undermine the goal.</p>
+              <div class="risk-mitig"><b>Mitigation</b>Message Fatigue Rate is a named guardrail KPI; frequency caps are enforced at the Governance layer, not left to per-campaign judgment.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Competitive Response</span><span class="sev low">Low</span></div>
+              <p>Rivals — Foodpanda in Hong Kong; HungerStation and Jahez in Saudi Arabia — could respond to more effective targeting with countermeasures of their own.</p>
+              <div class="risk-mitig"><b>Mitigation</b>PULSE's advantage is the compounding measurement discipline of the Experimentation Framework, not one copyable tactic — a genuine but survivable risk.</div>
+            </div>
+            <div class="risk-card">
+              <div class="risk-top"><span class="risk-title">Overexpansion Outrunning Ops Capacity</span><span class="sev med">Medium</span></div>
+              <p>Meituan's own CEO Wang Xing has publicly cautioned against "blind" overexpansion internationally, in the context of the company's early-stage Brazil entry — a caution directly relevant to how fast new markets should be added to PULSE's own scope.</p>
+              <div class="risk-mitig"><b>Mitigation</b>The cold-start-aware Market Launch Workflow is deliberately conservative: observe-only before any spend, graduation only after sufficient local data.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: EXPECTED BUSINESS IMPACT
+           ============================================================ -->
+      <section id="impact" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>07 · Execution</div>
+            <h1 class="section-title">Expected Business Impact</h1>
+            <p class="section-dek">One cohort, walked from assumption to output in the open — not a headline number with no math behind it.</p>
+          </div>
+
+          <div class="callout disclaimer" style="margin-bottom:36px;">
+            <svg class="icon"><use href="#i-flag"/></svg>
+            <div><p style="margin-bottom:0;">Every figure below is a <strong>modeled illustration</strong> built from stated assumptions, not a real projection for Keeta. The point is to show the mechanism by which a platform like this creates value — the specific numbers exist so the logic can be checked, not because they're forecasts.</p></div>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">Step 1 — Assumptions (inputs)</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:34%;">Assumption</th><th style="width:20%;">Illustrative value</th><th>Basis</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Blended MAU, live markets</td><td class="mono">1,450,000</td><td>Same illustrative pool used in the Segment Builder demo</td></tr>
+                  <tr><td class="strong">Phase-1 target cohort (Waver-stage+)</td><td class="mono">~12% of MAU</td><td>Midpoint of the 10–14% range from Opportunity Analysis</td></tr>
+                  <tr><td class="strong">Baseline reactivation rate</td><td class="mono">14.0%</td><td>Illustrative, informed by typical win-back baselines</td></tr>
+                  <tr><td class="strong">PULSE-assisted reactivation rate</td><td class="mono">16.5%</td><td>Baseline × the +18% relative lift modeled in Executive Summary</td></tr>
+                  <tr><td class="strong">Incremental GMV per reactivated user (90d)</td><td class="mono">$45</td><td>Illustrative blended AOV × modest repeat frequency</td></tr>
+                  <tr><td class="strong">Total campaign cost, full cohort</td><td class="mono">$95,000</td><td>Illustrative blended push / email / small-credit mix</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-label" style="margin-bottom:10px;">Step 2 — Computed outputs</div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th style="width:34%;">Output</th><th style="width:26%;">Calculation</th><th>Result</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">Target cohort size</td><td class="mono">1,450,000 × 12%</td><td class="mono">174,000 users</td></tr>
+                  <tr><td class="strong">Reactivated — baseline scenario</td><td class="mono">174,000 × 14.0%</td><td class="mono">24,360 users</td></tr>
+                  <tr><td class="strong">Reactivated — PULSE-assisted</td><td class="mono">174,000 × 16.5%</td><td class="mono">28,710 users</td></tr>
+                  <tr><td class="strong">Incremental reactivated users</td><td class="mono">28,710 − 24,360</td><td class="mono" style="color:var(--positive);">+4,350 users</td></tr>
+                  <tr><td class="strong">Incremental GMV</td><td class="mono">4,350 × $45</td><td class="mono" style="color:var(--positive);">≈ $195,750</td></tr>
+                  <tr><td class="strong">Cost per incremental retained user — PULSE</td><td class="mono">$95,000 ÷ 4,350</td><td class="mono">≈ $21.80</td></tr>
+                  <tr><td class="strong">Cost per retained user — blanket-discount baseline</td><td class="mono">illustrative comparison</td><td class="mono">≈ $27.30</td></tr>
+                  <tr><td class="strong">Net efficiency gain</td><td class="mono">($27.30 − $21.80) ÷ $27.30</td><td class="mono" style="color:var(--positive);">≈ −20% cost per retained user</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="callout note">
+            <svg class="icon"><use href="#i-info"/></svg>
+            <div><p style="margin-bottom:0;">This walk-through covers <strong>one cohort in one measurement window</strong>. The +6pt D90 retention figure in the Executive Summary is the aggregate target once this mechanism runs across all cohorts, channels, and markets at scale — not a claim this single calculation proves on its own. The separate 85% campaign-setup-time reduction is an operational-efficiency claim (see Time to Launch a Campaign in KPIs), not a GMV or cost figure, so it isn't part of this financial waterfall.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: FUTURE ENHANCEMENTS
+           ============================================================ -->
+      <section id="future" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>08 · Reference</div>
+            <h1 class="section-title">Future Enhancements</h1>
+            <p class="section-dek">Seven directions beyond the 12-month roadmap — directional, not committed.</p>
+          </div>
+
+          <div class="grid grid-3">
+            <div class="feature-card"><h3>Driver / Courier-Ops Intelligence</h3><p>The same predictive-retention logic applied to courier attrition — a real operational cost in any gig-delivery model — flagging at-risk couriers early rather than only after they've already left.</p></div>
+            <div class="feature-card"><h3>Merchant-Ops Intelligence</h3><p>Extend the architecture to restaurant partners: predict merchant churn, surface early signals like declining order-acceptance rate, and support account management the way PULSE supports user outreach today.</p></div>
+            <div class="feature-card"><h3>Hyper-Personalized Loyalty AI</h3><p>Move from reactive win-back into proactive loyalty — individualized reward structures shaped by predicted long-term value and behavior pattern, rather than one-size-fits-all tiers.</p></div>
+            <div class="feature-card"><h3>Voice Support Integration</h3><p>Extend the Sentiment &amp; Feedback NLP model to call-transcript data, widening the "why are we losing people" signal beyond text-based tickets and reviews.</p></div>
+            <div class="feature-card"><h3>Expanded Copilot Autonomy</h3><p>Once trust is earned through Phase 3's read/draft-only Copilot, a longer-term path could allow narrowly-scoped, pre-approved actions to execute automatically — always inside hard-coded guardrails, never open-ended autonomy.</p></div>
+            <div class="feature-card"><h3>Cross-Sell Into the Super-App</h3><p>With appropriate consent and governance, predicted risk and value signals could inform cross-sell timing into Meituan's other services — turning single-vertical retention into whole-ecosystem retention.</p></div>
+            <div class="feature-card"><h3>Drone-Delivery-Linked Signals</h3><p>Meituan's commercial drone delivery program — already live in Shenzhen and Shanghai — could eventually feed a new behavioral signal: whether drone-delivery experience measurably changes a user's retention pattern.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION: ABOUT & SOURCES
+           ============================================================ -->
+      <section id="appendix" class="doc-section">
+        <div class="section-inner-wide">
+          <div class="section-head">
+            <div class="section-eyebrow"><span class="rule"></span>08 · Reference</div>
+            <h1 class="section-title">About &amp; Sources</h1>
+            <p class="section-dek">How this document was built, and who built it.</p>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">About this document</h2></div>
+            <p style="font-size:14px;max-width:760px;">This document was independently written by Krishna Nagpal as a demonstration of product thinking for a User Operations Internship application. It proposes a hypothetical internal platform for Keeta, Meituan's international delivery brand, and is built entirely from publicly available information — company earnings disclosures, market-expansion news coverage, and industry research.</p>
+            <p style="font-size:14px;max-width:760px;">It is <strong>not</strong> based on, and does not reflect, any confidential or internal Meituan or Keeta information, and it is <strong>not</strong> an official Meituan or Keeta document. Every business-impact figure, dashboard number, and model metric presented as illustrative throughout this document is a modeled example for demonstration purposes — not a real projection, forecast, or claim about Keeta's actual systems or performance.</p>
+          </div>
+
+          <div class="pulse-rule">
+            <svg viewBox="0 0 60 14"><polyline class="pulse-wave" points="0,7 18,7 22,2 26,12 30,7 42,7 46,3 50,11 54,7 60,7"/></svg>
+          </div>
+
+          <div class="block">
+            <div class="block-head"><h2 class="h-lg">Sources &amp; references</h2></div>
+            <div class="grid grid-2">
+              <div class="feature-card"><h3>Company financial disclosures</h3><p>Meituan's FY2025 annual results and Q1 2026 quarterly results — revenue, operating loss, R&amp;D spend, and segment performance.</p></div>
+              <div class="feature-card"><h3>Market expansion coverage</h3><p>Public reporting on Keeta's Hong Kong launch and market-share position (2023–2025), and its Saudi Arabia and wider GCC expansion (2024–2026).</p></div>
+              <div class="feature-card"><h3>Industry &amp; market sizing research</h3><p>Third-party market-sizing estimates for GCC food-delivery and quick-commerce, used to ground the Opportunity Analysis section.</p></div>
+              <div class="feature-card"><h3>AI &amp; technology reporting</h3><p>Public coverage and company disclosures on Meituan's AI systems — its logistics dispatch platform, the LongCat model family, and the Xiaotuan assistant.</p></div>
+              <div class="feature-card"><h3>Executive commentary</h3><p>Public interviews and earnings-call commentary from Meituan leadership, including CEO Wang Xing.</p></div>
+              <div class="feature-card"><h3>General industry practice</h3><p>Publicly documented experimentation and ML-platform approaches at comparable consumer-tech companies, used only as directional context in Opportunity Analysis.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--cover-bg);color:var(--cover-ink);padding:80px 0;margin-top:80px;">
+          <div class="section-inner-wide" style="text-align:center;">
+            <svg class="icon" style="width:34px;height:34px;color:var(--accent);margin-bottom:22px;"><use href="#i-user-circle"/></svg>
+            <h2 style="font-family:var(--font-display);font-size:26px;margin-bottom:6px;">Krishna Nagpal</h2>
+            <p style="color:#9BA1A8;font-size:14px;margin-bottom:4px;">BITS Pilani, Dubai Campus</p>
+            <p style="margin-bottom:26px;"><a href="https://linkedin.com/in/krishnanagpal" style="color:var(--accent);font-family:var(--font-mono);font-size:13px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">linkedin.com/in/krishnanagpal <svg class="icon" style="width:12px;height:12px;"><use href="#i-external"/></svg></a></p>
+            <p style="max-width:520px;margin:0 auto;color:#AEB3B9;font-size:13.5px;line-height:1.7;">Written as a demonstration of product and analytical thinking — connecting public business signals to a concrete, buildable product proposal — for a User Operations Internship application. Thank you for reading.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION_ANCHOR -->
+
+    </div>
+
+    <footer class="doc-footer">
+      <div>Prepared by <a href="https://linkedin.com/in/krishnanagpal" target="_blank" rel="noopener">Krishna Nagpal</a><span class="fdiv">/</span>BITS Pilani, Dubai Campus</div>
+      <div><a href="https://linkedin.com/in/krishnanagpal" target="_blank" rel="noopener">linkedin.com/in/krishnanagpal <svg class="icon icon-sm"><use href="#i-external"/></svg></a><span class="fdiv">/</span>Independent case study — not an official Meituan/Keeta document</div>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var sectionOrder = ['cover','exec-summary','problem','vision','opportunity','personas','journey','features','workflows','dashboards','ai-opportunities','architecture','kpis','experimentation','roadmap','risks','impact','future','appendix'];
+  var labels = {
+    'cover':'Cover','exec-summary':'Executive Summary','problem':'Problem Statement','vision':'Vision & Alignment',
+    'opportunity':'Opportunity Analysis','personas':'User Personas','journey':'User Journey','features':'Feature Specifications',
+    'workflows':'Core Workflows','dashboards':'Dashboard Wireframes','ai-opportunities':'AI/ML Opportunities',
+    'architecture':'Technical Architecture','kpis':'KPIs & Metrics','experimentation':'Experimentation Framework',
+    'roadmap':'Implementation Roadmap','risks':'Risks & Mitigations','impact':'Expected Business Impact',
+    'future':'Future Enhancements','appendix':'About & Sources'
+  };
+
+  var contentScroll = document.getElementById('contentScroll');
+  var crumbLabel = document.getElementById('crumbLabel');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var sidebar = document.getElementById('sidebar');
+  var menuToggle = document.getElementById('menuToggle');
+
+  function currentIndex(){
+    var id = (location.hash||'#cover').slice(1);
+    var idx = sectionOrder.indexOf(id);
+    return idx === -1 ? 0 : idx;
+  }
+
+  function runCountUps(root){
+    var els = root.querySelectorAll('[data-countup]');
+    els.forEach(function(el){
+      if(el.dataset.done) return;
+      el.dataset.done = "1";
+      var target = parseFloat(el.dataset.value);
+      var suffix = el.dataset.suffix || '';
+      var decimals = el.dataset.decimals ? parseInt(el.dataset.decimals,10) : 0;
+      var dur = 1100;
+      var t0 = performance.now();
+      function tick(now){
+        var p = Math.min(1,(now-t0)/dur);
+        var eased = 1-Math.pow(1-p,3);
+        el.textContent = (target*eased).toFixed(decimals)+suffix;
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  function showSection(id, opts){
+    opts = opts || {};
+    if(sectionOrder.indexOf(id)===-1) id='cover';
+    document.querySelectorAll('.doc-section').forEach(function(s){s.classList.remove('is-active');});
+    var target = document.getElementById(id);
+    if(target) target.classList.add('is-active');
+    document.querySelectorAll('.nav-link').forEach(function(a){a.classList.toggle('is-active', a.dataset.target===id);});
+    if(crumbLabel) crumbLabel.textContent = labels[id] || id;
+    if(!opts.noScroll && contentScroll) contentScroll.scrollTo(0,0);
+    if(!opts.noHash) history.replaceState(null,'','#'+id);
+    if(prevBtn) prevBtn.disabled = sectionOrder.indexOf(id)===0;
+    if(nextBtn) nextBtn.disabled = sectionOrder.indexOf(id)===sectionOrder.length-1;
+    if(target) runCountUps(target);
+    if(sidebar) sidebar.classList.remove('is-open');
+  }
+
+  document.querySelectorAll('.nav-link').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      showSection(this.dataset.target);
+    });
+  });
+
+  if(prevBtn) prevBtn.addEventListener('click', function(){
+    var i = currentIndex();
+    if(i>0) showSection(sectionOrder[i-1]);
+  });
+  if(nextBtn) nextBtn.addEventListener('click', function(){
+    var i = currentIndex();
+    if(i<sectionOrder.length-1) showSection(sectionOrder[i+1]);
+  });
+
+  if(menuToggle) menuToggle.addEventListener('click', function(){
+    var isOpen = sidebar.classList.toggle('is-open');
+    var useEl = menuToggle.querySelector('use');
+    if(useEl) useEl.setAttribute('href', isOpen ? '#i-close' : '#i-menu');
+  });
+
+  window.addEventListener('hashchange', function(){
+    showSection((location.hash||'#cover').slice(1));
+  });
+
+  // init on load
+  showSection((location.hash||'#cover').slice(1), {noHash:true});
+
+  window.PULSE = window.PULSE || {};
+  window.PULSE.showSection = showSection;
+  window.PULSE.runCountUps = runCountUps;
+})();
+(function(){
+  var marketBase = {all:1450000, hk:520000, ksa:640000, uae:180000, qa:65000, kw:45000};
+  var riskMult = {any:1.0, high:0.12, med:0.22, low:0.35};
+  var recencyMult = {any:1.0, d0_7:0.4, d8_21:0.35, d22_45:0.25};
+  var ltvMult = {any:1.0, top20:0.2, mid:0.5, entry:0.3};
+
+  var $market = document.getElementById('segMarket');
+  var $risk = document.getElementById('segRisk');
+  var $recency = document.getElementById('segRecency');
+  var $ltv = document.getElementById('segLtv');
+  var $val = document.getElementById('segResultValue');
+
+  if(!$market) return; // section not present, skip
+
+  function recalc(){
+    var base = marketBase[$market.value] || 0;
+    var r = riskMult[$risk.value];
+    var rec = recencyMult[$recency.value];
+    var l = ltvMult[$ltv.value];
+    var estimate = Math.round(base * r * rec * l / 10) * 10;
+    if(estimate < 10) estimate = Math.max(10, estimate);
+    $val.textContent = estimate.toLocaleString('en-US');
+  }
+
+  [$market,$risk,$recency,$ltv].forEach(function(el){
+    el.addEventListener('change', recalc);
+  });
+  recalc();
+})();
+(function(){
+  var data = {
+    riyadh: {
+      title: 'Segment built — 4,180 users',
+      body: 'Found 4,180 users in Riyadh matching the Waver-stage pattern: order frequency down 30%+ over the trailing three weeks, still active in the last 10 days. 1,240 of them sit in the Top-40% predicted-LTV band.',
+      note: 'Full discounting isn\'t warranted for this group yet — a low-cost in-app nudge is the recommended first move.',
+      meta: [['Segment size','4,180 users'],['Confidence','High'],['Suggested action','In-app nudge']]
+    },
+    hkwinback: {
+      title: 'Draft ready for review',
+      body: 'Audience: 2,860 Hong Kong users, 60–90 days dormant, Top-20% predicted LTV. Recommended incentive: HK$25 credit on next 2 orders (not a percentage discount), capped at HK$50 total exposure per user. Channel: push, then email 48 hours later.',
+      note: 'This is a draft only. It needs review and approval before it can be scheduled — PULSE never sends an offer on its own.',
+      meta: [['Est. cost','≈ HK$71.5K'],['Approval required','Yes'],['Draft status','Pending review']]
+    },
+    priority: {
+      title: 'This week\'s recommended focus',
+      body: 'Highest-leverage cohort: Jeddah Waver-stage users, Top-40% LTV (3,410 users). They\'re earlier in the decline curve than comparable Riyadh users, so a smaller nudge should be proportionally more effective. Second priority: Hong Kong\'s Mong Kok district, which is showing an early anomaly flag.',
+      note: 'Ranking updates daily as new behavioral signals come in.',
+      meta: [['Cohorts ranked','6'],['Top-pick confidence','Medium–High'],['Data freshness','6 min']]
+    },
+    kuwait: {
+      title: 'Root-cause read on Kuwait D30 dip',
+      body: 'D30 retention in Kuwait is down 2.3 points week-over-week. Ranked contributors: (1) late-delivery complaints in Salmiya up 140% vs. baseline over 9 days, (2) a new competitor promotion detected via pricing-signal monitoring, (3) slightly lower second-order conversion among users acquired in the last two weeks.',
+      note: 'Recommendation: prioritize the Salmiya service issue first — largest single contributor and the most directly fixable.',
+      meta: [['Root-cause confidence','Medium'],['Contributing factors','3'],['Suggested owner','Regional Ops']]
+    }
+  };
+  var chips = document.querySelectorAll('.copilot-chip');
+  var $q = document.getElementById('copilotQuery');
+  var $typing = document.getElementById('copilotTyping');
+  var $resp = document.getElementById('copilotResponse');
+  var $empty = document.getElementById('copilotEmpty');
+  var $title = document.getElementById('copilotRTitle');
+  var $body = document.getElementById('copilotRBody');
+  var $note = document.getElementById('copilotRNote');
+  var $meta = document.getElementById('copilotRMeta');
+
+  if(!chips.length || !$q) return;
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var d = data[this.dataset.key];
+      if(!d) return;
+      chips.forEach(function(c){ c.classList.remove('is-active'); });
+      this.classList.add('is-active');
+      $q.textContent = '"' + this.textContent + '"';
+      $resp.classList.remove('show');
+      if($empty) $empty.style.display = 'none';
+      $typing.style.display = 'flex';
+      setTimeout(function(){
+        $typing.style.display = 'none';
+        $title.textContent = d.title;
+        $body.textContent = d.body;
+        $note.textContent = d.note;
+        $meta.innerHTML = d.meta.map(function(m){
+          return '<div class="rm-item"><span class="rm-k">'+m[0]+'</span><span class="rm-v">'+m[1]+'</span></div>';
+        }).join('');
+        $resp.classList.add('show');
+      }, 850);
+    });
+  });
+})();
+// SCRIPT_ANCHOR_2
+</script>
+</body>
+</html>
